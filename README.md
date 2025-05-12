@@ -26,6 +26,9 @@ Where:
 - **S<sub>gauge</sub>** → Gauge field (force) action
 - **S<sub>quantum</sub>** → Quantum corrections
 
+<br  /><br />
+![Architecture Diagram](./docs/gfx/grandunifiedtheoryofeverything.png)
+
 # The Theory of Everything: Project Explanation
 
 ## Overview
