@@ -335,13 +335,13 @@ pip install numpy scipy sympy matplotlib
 
 ```bash
 # Run the component formulas explorer
-python explore_toe_formulas.py
+python3 explore_toe_formulas.py
 
 # Run the main visualization interface
-python visualize_toe.py
+python3 visualize_toe.py
 
 # Generate a PDF with properly formatted equations
-python create_toe_pdf.py
+python3 create_toe_pdf.py
 ```
 
 ### New Modular Interface
@@ -350,7 +350,7 @@ python create_toe_pdf.py
 
 ```bash
 # Run the interactive UI
-streamlit run toe_ui.py
+streamlit run gutoeUIUX.py
 
 # Get information about a formula
 python3 toe_unified.py formula get unified_action
@@ -433,9 +433,9 @@ For detailed documentation, please refer to:
 s
 bolii
 - <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/blob/main/docs/USER_GUIDE.md">Explanation</a>: Comprehensive explanation of the Theory of Everything
-- [Modular API Documentation](README_MODULAR.md): Detailed documentation for the modular API
-- [Agent Visualizations Documentation](AGENT_VISUALIZATIONS.md): Documentation for the agent-friendly visualizations
-- [Enhanced Visualizations Documentation](ENHANCED_VISUALIZATIONS.md): Documentation for the enhanced 3D and 4D visualizations
+- <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/blob/main/docs/README_MODULAR.md">Modular API Documentation</a>: Detailed documentation for the modular API
+- <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/blob/main/docs/AGENT_VISUALIZATIONS.md">Agent Visualizations Documentation</a>: Documentation for the agent-friendly visualizations
+- <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/blob/main/docs/ENHANCED_VISUALIZATIONS.md">Enhanced Visualizations Documentation</a>: Documentation for the enhanced 3D and 4D visualizations
 
 ## Formula Verification
 
