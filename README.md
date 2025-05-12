@@ -230,14 +230,17 @@ The Theory of Everything presented in this project has several profound implicat
 
 Run the main visualization interface:
    ```
-   python visualize_toe.py
+   python3 visualize_toe.py
    ```
    This provides a menu-driven interface to explore all aspects of the Theory of Everything.
 
 Explore specific components:
-   - For formula visualization: `python demonstrate_formulas.py`
-   - For Schumann resonances: `python math/schumann.py`
-   - For Theory of Everything core visualizations: `python math/toe.py`
+   - For formula visualization: `python3 demonstrate_formulas.py`
+   - For Schumann resonances: `python3 math/schumann.py`
+   - For Theory of Everything core visualizations: `python3 math/toe.py`
+
+
+## experimental and not complete documentation agents as exploration of scientific notation in latex, pdf and markdown
 
 ### Generating Documentation
 
@@ -274,8 +277,8 @@ The combination of rigorous mathematical formulation with interactive visualizat
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/theoryofeverything.git
-cd theoryofeverything
+git clone https://github.com/Professor-Codephreak/theoryofeverything/gutoe.git
+cd gutoe
 
 # Install the package in development mode
 pip install -e .
