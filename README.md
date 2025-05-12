@@ -99,7 +99,8 @@ This script provides a unified interface for exploring all aspects of the Theory
 
 ### PDF Generation Tools
 
-The project includes tools for generating properly formatted PDF documentation:
+The project includes tools for generating properly formatted PDF documentation:<br />
+The current PDF agent is not correctly generating scientific notation.
 
 - `generate_toe_pdf.py`: Creates a PDF using matplotlib for rendering equations
 - `generate_latex_toe.py`: Creates a LaTeX document with professional typesetting
