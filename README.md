@@ -28,74 +28,57 @@ Where:
 
 ## Component Formulas
 
-### Gravity Action (S<sub>gravity</sub>)
+### Gravity Action ($S_{\text{gravity}}$)
 
-**Einstein-Hilbert Action (Classical Gravity)**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bgravity%7D%7D%5E%7B%5Ctext%7BEH%7D%7D%20%3D%20%5Cfrac%7B1%7D%7B16%5Cpi%20G%7D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20%28R%20-%202%5CLambda%29" alt="Einstein-Hilbert Action">
-</p>
-*Verified source: [Einstein Field Equation](https://www.examples.com/physics/einstein-field-equation.html)*
+**Einstein-Hilbert Action (Classical Gravity)**
+$$ S_{\text{gravity}}^{\text{EH}} = \frac{1}{16\pi G} \int d^4x \sqrt{-g} (R - 2\Lambda) $$
+*Verified source: [Einstein Field Equations](https://en.wikipedia.org/wiki/Einstein_field_equations) (The action principle from which these equations are derived)*
 
-**Loop Quantum Gravity (LQG) Extension**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bgravity%7D%7D%5E%7B%5Ctext%7BLQG%7D%7D%20%3D%20%5Cfrac%7B1%7D%7B8%5Cpi%20G%7D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20%5Cepsilon%5E%7Babc%7D%20E_a%5Ei%20E_b%5Ej%20F_%7Bij%7D%5Ec" alt="Loop Quantum Gravity Extension">
-</p>
-*Verified source: [Ashtekar variables - Scholarpedia](http://www.scholarpedia.org/article/Ashtekar_variables)*
+**Loop Quantum Gravity (LQG) Extension (User Provided Form)**
+$$ S_{\text{gravity}}^{\text{LQG (User)}} = \frac{1}{8\pi G} \int d^4x \sqrt{-g} \epsilon^{abc} E_a^i E_b^j F_{ij}^c $$
+*Verified source: [Ashtekar variables - Scholarpedia](http://www.scholarpedia.org/article/Ashtekar_variables) (Note: LQG actions can take various forms; this specific formulation's interpretation would depend on precise definitions of $E$ and $F$.)*
 
-**String/M-Theory Gravity**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bgravity%7D%7D%5E%7B%5Ctext%7BString%7D%7D%20%3D%20%5Cfrac%7B1%7D%7B2%5Ckappa%5E2%7D%20%5Cint%20d%5E%7B10%7Dx%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20e%5E%7B-2%5Cphi%7D%20%5Cleft%28R%20&plus;%204%20%28%5Cnabla%20%5Cphi%29%5E2%20-%20%5Cfrac%7B1%7D%7B12%7D%20H_%7B%5Cmu%5Cnu%5Crho%7D%20H%5E%7B%5Cmu%5Cnu%5Crho%7D%5Cright%29" alt="String/M-Theory Gravity">
-</p>
-*Verified source: [Dilaton in nLab](https://ncatlab.org/nlab/show/dilaton)*
+**String/M-Theory Gravity (Low Energy Effective Action - Dilaton Gravity)**
+$$ S_{\text{gravity}}^{\text{String}} = \frac{1}{2\kappa^2} \int d^{10}x \sqrt{-g} e^{-2\phi} \left(R + 4 (\nabla \phi)^2 - \frac{1}{12} H_{\mu\nu\rho} H^{\mu\nu\rho}\right) $$
+*Verified source: [Dilaton in nLab](https://ncatlab.org/nlab/show/dilaton) (context of dilaton gravity)*
 
-### Matter Action (S<sub>matter</sub>)
+### Matter Action ($S_{\text{matter}}$)
 
-**Fermion Fields (Dirac Action)**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bfermion%7D%7D%20%3D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20%5Cbar%7B%5Cpsi%7D%20%28i%20%5Cgamma%5E%5Cmu%20D_%5Cmu%20-%20m%29%20%5Cpsi" alt="Fermion Fields (Dirac Action)">
-</p>
+**Fermion Fields (Dirac Action in Curved Spacetime)**
+$$ S_{\text{fermion}} = \int d^4x \sqrt{-g} \bar{\psi} (i \gamma^\mu D_\mu - m) \psi $$
 *Verified source: [Dirac equation in curved spacetime - Wikipedia](https://en.wikipedia.org/wiki/Dirac_equation_in_curved_spacetime)*
 
-**Higgs Field (Spontaneous Symmetry Breaking)**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7BHiggs%7D%7D%20%3D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20%5Cleft%5B%20%28D_%5Cmu%20%5Cphi%29%5E%5Cdagger%20%28D%5E%5Cmu%20%5Cphi%29%20-%20V%28%5Cphi%29%20%5Cright%5D" alt="Higgs Field (Spontaneous Symmetry Breaking)">
-</p>
+**Higgs Field (Spontaneous Symmetry Breaking)**
+$$ S_{\text{Higgs}} = \int d^4x \sqrt{-g} \left[ (D_\mu \phi)^\dagger (D^\mu \phi) - V(\phi) \right] $$
 *Verified source: [Higgs mechanism - Wikipedia](https://en.wikipedia.org/wiki/Higgs_mechanism)*
 
-### Gauge Field Action (S<sub>gauge</sub>)
+### Gauge Field Action ($S_{\text{gauge}}$)
 
-**Yang-Mills Action (Non-Abelian Gauge Fields)**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bgauge%7D%7D%20%3D%20-%5Cfrac%7B1%7D%7B4%7D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20F_%7B%5Cmu%5Cnu%7D%5Ea%20F%5E%7B%5Cmu%5Cnu%7D_a" alt="Yang-Mills Action (Non-Abelian Gauge Fields)">
-</p>
+**Yang-Mills Action (Non-Abelian Gauge Fields)**
+$$ S_{\text{gauge}} = -\frac{1}{4} \int d^4x \sqrt{-g} F_{\mu\nu}^a F_a^{\mu\nu} $$
 *Verified source: [Yang–Mills theory - Wikipedia](https://en.wikipedia.org/wiki/Yang%E2%80%93Mills_theory)*
 
-**Supersymmetric Gauge Fields**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7BSUSY-gauge%7D%7D%20%3D%20%5Cint%20d%5E4x%20%5C%2C%20%5Cleft%5B%20-%5Cfrac%7B1%7D%7B4%7D%20F_%7B%5Cmu%5Cnu%7D%20F%5E%7B%5Cmu%5Cnu%7D%20&plus;%20i%20%5Cbar%7B%5Clambda%7D%20%5Cgamma%5E%5Cmu%20D_%5Cmu%20%5Clambda%20%5Cright%5D" alt="Supersymmetric Gauge Fields">
-</p>
-*Verified source: [Lectures on Supersymmetry](https://www.sissa.it/tpp/phdsection/OnlineResources/4021/susycourse.pdf)*
+**Supersymmetric Gauge Fields (e.g., N=1 Super-Yang-Mills vector multiplet)**
+$$ S_{\text{SUSY-gauge}} = \int d^4x \left[ -\frac{1}{4} F_{\mu\nu}^a F_a^{\mu\nu} + i \bar{\lambda}^a \gamma^\mu (D_\mu \lambda)^a \right] $$
+*(Note: $\sqrt{-g}$ implicitly included or spacetime assumed flat for simplicity here. $\lambda^a$ is the gaugino, a Majorana fermion in the adjoint representation.) Verified source: Standard texts on Supersymmetry (e.g., Wess and Bagger, "Supersymmetry and Supergravity") or review articles like [Lectures on Supersymmetry (arXiv:hep-th/9612114)](https://arxiv.org/abs/hep-th/9612114)*
 
-### Quantum Corrections (S<sub>quantum</sub>)
+### Quantum Corrections ($S_{\text{quantum}}$)
 
-**Path Integral Formulation**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?Z%20%3D%20%5Cint%20%5Cmathcal%7BD%7D%5Cphi%20%5C%2C%20e%5E%7Bi%20S%5B%5Cphi%5D%7D" alt="Path Integral Formulation">
-</p>
+**Path Integral Formulation (Defining partition function $Z$)**
+$$ Z = \int \mathcal{D}\phi \, e^{iS[\phi]/\hbar} $$
 *Verified source: [Partition function (quantum field theory) - Wikipedia](https://en.wikipedia.org/wiki/Partition_function_(quantum_field_theory))*
 
-**Loop Corrections and Renormalization**:
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S_%7B%5Ctext%7Bquantum%7D%7D%20%3D%20%5Csum_%7Bn%3D1%7D%5E%7B%5Cinfty%7D%20%5Chbar%5En%20S_n" alt="Loop Corrections and Renormalization">
-</p>
-*Verified source: [The hbar Expansion in Quantum Field Theory](https://www.researchgate.net/publication/239934152_The_hbar_Expansion_in_Quantum_Field_Theory)*
+**Loop Corrections and Renormalization (Schematic for effective action $\Gamma$)**
+$$ \Gamma[\phi_{\text{cl}}] = S_{\text{classical}}[\phi_{\text{cl}}] + S_{\text{1-loop}}[\phi_{\text{cl}}] + S_{\text{2-loop}}[\phi_{\text{cl}}] + \dots $$
+Where $S_{\text{L-loop}} \propto \hbar^{L-1}$ (if $S_{\text{classical}}$ is $O(\hbar^0)$) or $\hbar^L$ (if $S_{\text{classical}}$ is $O(\hbar^{-1})$ in $S/\hbar$). A common expression for $S_{\text{quantum}}$ as corrections to a classical action $S_0$:
+$$ S_{\text{quantum}} = \sum_{n=1}^{\infty} \hbar^n S_n^{\text{corr}} $$
+*Verified source: General concept in QFT, e.g., [The hbar Expansion in Quantum Field Theory](https://scholar.google.com/scholar?q=hbar+expansion+quantum+field_theory)*
 
 ## Full Master Equation
+Combining the primary classical actions for a simplified Standard Model + Gravity scenario, and schematically adding quantum corrections:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/png.latex?S%20%3D%20%5Cfrac%7B1%7D%7B16%5Cpi%20G%7D%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5C%2C%20%28R%20-%202%5CLambda%29%20&plus;%20%5Cint%20d%5E4x%20%5C%2C%20%5Csqrt%7B-g%7D%20%5Cleft%5B%20%5Cbar%7B%5Cpsi%7D%20%28i%20%5Cgamma%5E%5Cmu%20D_%5Cmu%20-%20m%29%20%5Cpsi%20&plus;%20%28D_%5Cmu%20%5Cphi%29%5E%5Cdagger%20%28D%5E%5Cmu%20%5Cphi%29%20-%20V%28%5Cphi%29%20-%20%5Cfrac%7B1%7D%7B4%7D%20F_%7B%5Cmu%5Cnu%7D%5Ea%20F%5E%7B%5Cmu%5Cnu%7D_a%20%5Cright%5D%20&plus;%20%5Csum_%7Bn%3D1%7D%5E%7B%5Cinfty%7D%20%5Chbar%5En%20S_n" alt="Full Master Equation">
-</p>
-
+$$ S = \int d^4x \sqrt{-g} \left[ \frac{1}{16\pi G} (R - 2\Lambda) + \bar{\psi} (i \gamma^\mu D_\mu - m) \psi + (D_\mu \phi)^\dagger (D^\mu \phi) - V(\phi) - \frac{1}{4} F_{\mu\nu}^a F_a^{\mu\nu} \right] + S_{\text{quantum}} $$
+Where $S_{\text{quantum}} = \sum_{n=1}^{\infty} \hbar^n S_n^{\text{corr}}$ represents the quantum loop corrections to the effective action.
 ## Installation
 
 ```bash
