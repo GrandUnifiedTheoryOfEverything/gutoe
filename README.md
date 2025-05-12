@@ -27,7 +27,7 @@ Where:
 - **S<sub>quantum</sub>** → Quantum corrections
 
 <br  /><br />
-![Architecture Diagram](./docs/gfx/grandunifiedtheoryofeverything.png)
+![Architecture Diagram](./gfx/grandunifiedtheoryofeverything.png)
 
 # The Theory of Everything: Project Explanation
 
