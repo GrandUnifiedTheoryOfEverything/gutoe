@@ -425,7 +425,7 @@ python tests/run_tests.py core
 
 For detailed documentation, please refer to:
 
-- [Complete Documentation](DOCUMENTATION.md): Comprehensive guide to the Theory of Everything codebase
+- <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/tree/main/docs">Complete Documentation</a>: Comprehensive guide to the Theory of Everything codebase
 - [User Guide](USER_GUIDE.md): Step-by-step instructions for using the component formulas
 s
 bolii
