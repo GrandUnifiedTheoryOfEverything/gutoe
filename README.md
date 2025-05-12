@@ -124,18 +124,18 @@ The gravity action includes three main formulations:
    $$S_{\text{gravity}}^{\text{EH}} = \frac{1}{16\pi G} \int d^4x \, \sqrt{-g} \, (R - 2\Lambda)$$
    <br /><br />
    *Verified source: [Einstein Field Equations](https://en.wikipedia.org/wiki/Einstein_field_equations) (The action principle from which these equations are derived)*
-   <br />
+   <br /><br />
 
 **Loop Quantum Gravity Extension**:
    $$S_{\text{gravity}}^{\text{LQG}} = \frac{1}{8\pi G} \int d^4x \, \sqrt{-g} \, \epsilon^{abc} E_a^i E_b^j F_{ij}^c$$
-   <br /><br />*Verified source: [Ashtekar variables - Scholarpedia](http://www.scholarpedia.org/article/Ashtekar_variables) (Note: LQG actions can take various forms; this specific formulation's interpretation would depend on precise definitions of $E$ and $F$.)*<br />
+   <br /><br />*Verified source: [Ashtekar variables - Scholarpedia](http://www.scholarpedia.org/article/Ashtekar_variables) (Note: LQG actions can take various forms; this specific formulation's interpretation would depend on precise definitions of $E$ and $F$.)*<br /><br />
   
 
 **String/M-Theory Gravity**:
    $$S_{\text{gravity}}^{\text{String}} = \frac{1}{2\kappa^2} \int d^{10}x \, \sqrt{-g} \, e^{-2\phi} \left(R + 4 (\nabla \phi)^2 - \frac{1}{12} H_{\mu\nu\rho} H^{\mu\nu\rho}\right)$$
    <br /><br />
    *Verified source: [Dilaton in nLab](https://ncatlab.org/nlab/show/dilaton) (context of dilaton gravity)*
-   <br />
+   <br /><br />
 
 ### Matter Action
 
@@ -145,13 +145,13 @@ The matter action describes fermions and the Higgs field:
    $$S_{\text{fermion}} = \int d^4x \, \sqrt{-g} \, \bar{\psi} (i \gamma^\mu D_\mu - m) \psi$$
    <br /><br />
    *Verified source: [Dirac equation in curved spacetime - Wikipedia](https://en.wikipedia.org/wiki/Dirac_equation_in_curved_spacetime)*
-   <br />
+   <br /><br />
 
 **Higgs Field** (Spontaneous Symmetry Breaking):
    $$S_{\text{Higgs}} = \int d^4x \, \sqrt{-g} \, \left[ (D_\mu \phi)^\dagger (D^\mu \phi) - V(\phi) \right]$$
    <br /><br />
    *Verified source: [Higgs mechanism - Wikipedia](https://en.wikipedia.org/wiki/Higgs_mechanism)*
-  <br />
+  <br /><br />
 
 ### Gauge Field Action
 
@@ -161,13 +161,13 @@ The gauge field action describes the fundamental forces:
    $$S_{\text{gauge}} = -\frac{1}{4} \int d^4x \, \sqrt{-g} \, F_{\mu\nu}^a F^{\mu\nu}_a$$
    <br /><br />
    *Verified source: [Yang–Mills theory - Wikipedia](https://en.wikipedia.org/wiki/Yang%E2%80%93Mills_theory)*
-   <br />
+   <br /><br />
 
 **Supersymmetric Gauge Fields**:
    $$S_{\text{SUSY-gauge}} = \int d^4x \, \left[ -\frac{1}{4} F_{\mu\nu} F^{\mu\nu} + i \bar{\lambda} \gamma^\mu D_\mu \lambda \right]$$
    <br /><br />
    *(Note: $\sqrt{-g}$ implicitly included or spacetime assumed flat for simplicity here. $\lambda^a$ is the gaugino, a Majorana fermion in the adjoint representation.) Verified source: Standard texts on Supersymmetry (e.g., Wess and Bagger, "Supersymmetry and Supergravity") or review articles like [Lectures on Supersymmetry (arXiv:hep-th/9612114)](https://arxiv.org/abs/hep-th/9612114)*
-   <br />
+   <br /><br />
 
 ### Quantum Corrections
 
@@ -177,13 +177,13 @@ The quantum corrections account for quantum fluctuations:
    $$Z = \int \mathcal{D}\phi \, e^{i S[\phi]}$$
    <br /><br />
    *Verified source: [Partition function (quantum field theory) - Wikipedia](https://en.wikipedia.org/wiki/Partition_function_(quantum_field_theory))*
-   <br />
+   <br /><br />
 
 **Loop Corrections and Renormalization**:
    $$S_{\text{quantum}} = \sum_{n=1}^{\infty} \hbar^n S_n$$
    <br /><br />
     *Verified source: General concept in QFT, e.g., [The hbar Expansion in Quantum Field Theory](https://scholar.google.com/scholar?q=hbar+expansion+quantum+field+theory)*
-    <br />
+    <br /><br /><br />
 
 ## Computational Implementation
 
