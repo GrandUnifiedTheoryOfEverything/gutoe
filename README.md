@@ -432,7 +432,7 @@ For detailed documentation, please refer to:
 - [User Guide](USER_GUIDE.md): Step-by-step instructions for using the component formulas
 s
 bolii
-- [Explanation](EXPLANATION.md): Comprehensive explanation of the Theory of Everything
+- <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/blob/main/docs/USER_GUIDE.md">Explanation</a>: Comprehensive explanation of the Theory of Everything
 - [Modular API Documentation](README_MODULAR.md): Detailed documentation for the modular API
 - [Agent Visualizations Documentation](AGENT_VISUALIZATIONS.md): Documentation for the agent-friendly visualizations
 - [Enhanced Visualizations Documentation](ENHANCED_VISUALIZATIONS.md): Documentation for the enhanced 3D and 4D visualizations
