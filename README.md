@@ -226,6 +226,16 @@ The Theory of Everything presented in this project has several profound implicat
 
 ## How to Use This Project
 
+shell script installer
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+```bash
+streamlit run toe_ui.py
+```
+
 ### Exploring Visualizations
 
 Run the main visualization interface:
