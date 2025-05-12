@@ -343,21 +343,21 @@ python create_toe_pdf.py
 
 ### New Modular Interface
 
-#### For Human Users /// streamlit UI some components are not complete. the agents are cli based and moving into this basic UI
+#### Human Users /// streamlit UI some components are not complete. the agents are cli based and moving into this basic UI
 
 ```bash
 # Run the interactive UI
-python toe_ui.py
+streamlit run toe_ui.py
 
 # Get information about a formula
-python toe_unified.py formula get unified_action
+python3 toe_unified.py formula get unified_action
 
 # Generate a visualization
-python toe_unified.py visualization generate 4d_spacetime_curvature --show
+python3 toe_unified.py visualization generate 4d_spacetime_curvature --show
 
-# Generate LaTeX and PDF documentation
-python agents/latexagent.py --formula unified_action --output unified_action.tex
-python agents/pdfagent.py --formula unified_action --output unified_action.pdf --include-visualizations
+# Generate LaTeX and PDF documentation (not happy with this yet ... )
+python3 agents/latexagent.py --formula unified_action --output unified_action.tex
+python3 agents/pdfagent.py --formula unified_action --output unified_action.pdf --include-visualizations
 
 # All outputs are stored in the gfx/ directory
 # - Visualizations: gfx/2d/, gfx/3d/, gfx/4d/
