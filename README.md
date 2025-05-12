@@ -464,6 +464,7 @@ The verification process included:
   - **gauge_action.py**: Gauge field action components
   - **quantum_corrections.py**: Quantum corrections components
   - **unified_action.py**: Unified interface for all components
+  - <a href="https://github.com/GrandUnifiedTheoryOfEverything/gutoe/tree/main/gfx/Smatter">Smatter</a>
 
 - **visualize_toe.py**: Main visualization interface
 - **explore_toe_formulas.py**: Interface for exploring component formulas
