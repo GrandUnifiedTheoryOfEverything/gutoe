@@ -294,7 +294,7 @@ cd gutoe
 pip install -e .
 ```
 
-Alternatively, you can install the dependencies directly:
+Alternatively, you can install the mathematical dependencies manually:
 
 ```bash
 # Install dependencies
@@ -318,7 +318,7 @@ python create_toe_pdf.py
 
 ### New Modular Interface
 
-#### For Human Users
+#### For Human Users /// streamlit UI some components are not complete. the agents are cli based and moving into this basic UI
 
 ```bash
 # Run the interactive UI
