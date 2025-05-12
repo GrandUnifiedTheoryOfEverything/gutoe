@@ -261,7 +261,7 @@ chmod +x install.sh
 ```
 
 ```bash
-streamlit run toe_ui.py
+streamlit run gutoeUIUX.py
 ```
 
 ### Exploring Visualizations
