@@ -1,4 +1,4 @@
-y and # Theory of Everything - Modular API
+# Theory of Everything - Modular API
 
 This repository contains a modular API for interacting with the Theory of Everything, providing both human-friendly interfaces and advanced tools for AI agents.
 
