@@ -32,9 +32,9 @@ This is a high-priority area for contributions. If you have expertise in Python-
 A LaTeX Distribution (Required for PDF Generation): The pdfagent.py script shells out to pdflatex. You must have a working LaTeX installation on your system PATH.<br />
 Windows: MiKTeX
 macOS: MacTeX
-Linux:
+Linux:  (Debian/Ubuntu) or equivalent
 ```bash
-sudo apt-get install texlive-full (Debian/Ubuntu) or equivalent
+sudo apt-get install texlive-full
 ```
 ## Overview
 
