@@ -2,6 +2,28 @@
 
 A computational implementation of a Grand Unified Theory of Everything, unifying all fundamental forces and matter interactions into a single coherent mathematical framework.
 
+📁 Project Structure
+The project uses a modular structure to separate concerns. The UI, core logic, formulas, and visualization tools are all distinct components.
+```txt
+theory-of-everything/
+├── app.py                  # The main Streamlit application script
+├── unified/                # Core project library
+│   ├── __init__.py
+│   ├── toe_unified.py      # Main API class, combining all components
+│   ├── toe_formulas.py     # Formula definitions and tools
+│   ├── toe_vis.py          # Visualization generation logic
+│   └── agents/
+│       ├── latexagent.py   # Agent for generating LaTeX code
+│       └── pdfagent.py     # Agent for compiling LaTeX to PDF
+├── gfx/                    # Output directory for all generated assets
+│   ├── toe_logo.png        # (Optional) Logo displayed in the sidebar
+│   ├── 2d/
+│   ├── 3d/
+│   ├── 4d/
+│   ├── latex/
+│   └── pdf/
+└── requirements.txt        # Project dependencies
+```
 ⚠️ A Note on the PDF Generation Agent (Known Issue)<br /><br />
 The PDF generation agent, which relies on a LaTeX backend, currently has issues rendering complex mathematical formulas, particularly those involving scientific notation.
 This is a known bug. The agent may fail to correctly escape special characters or use the appropriate LaTeX math environments, resulting in compilation errors or improperly formatted output.<br /><br />
