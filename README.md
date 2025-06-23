@@ -29,6 +29,14 @@ The PDF generation agent, which relies on a LaTeX backend, currently has issues 
 This is a known bug. The agent may fail to correctly escape special characters or use the appropriate LaTeX math environments, resulting in compilation errors or improperly formatted output.<br /><br />
 This is a high-priority area for contributions. If you have expertise in Python-to-LaTeX generation, your help in resolving this issue would be greatly appreciated. <br /><br />Please see the Contributing section for more details.<br /><br />
 
+A LaTeX Distribution (Required for PDF Generation): The pdfagent.py script shells out to pdflatex. You must have a working LaTeX installation on your system PATH.
+```
+Windows: MiKTeX
+macOS: MacTeX
+Linux:
+```bash
+sudo apt-get install texlive-full (Debian/Ubuntu) or equivalent
+```
 ## Overview
 
 The Theory of Everything (ToE) is an ambitious project that combines advanced physics concepts from quantum field theory, general relativity, particle physics, and cosmology with computational visualization techniques to explore and demonstrate the mathematical structure of the universe.<br /><br />
