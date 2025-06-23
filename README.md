@@ -29,8 +29,7 @@ The PDF generation agent, which relies on a LaTeX backend, currently has issues 
 This is a known bug. The agent may fail to correctly escape special characters or use the appropriate LaTeX math environments, resulting in compilation errors or improperly formatted output.<br /><br />
 This is a high-priority area for contributions. If you have expertise in Python-to-LaTeX generation, your help in resolving this issue would be greatly appreciated. <br /><br />Please see the Contributing section for more details.<br /><br />
 
-A LaTeX Distribution (Required for PDF Generation): The pdfagent.py script shells out to pdflatex. You must have a working LaTeX installation on your system PATH.
-```
+A LaTeX Distribution (Required for PDF Generation): The pdfagent.py script shells out to pdflatex. You must have a working LaTeX installation on your system PATH.<br />
 Windows: MiKTeX
 macOS: MacTeX
 Linux:
