@@ -27,7 +27,12 @@ theory-of-everything/
 ⚠️ A Note on the PDF Generation Agent (Known Issue)<br /><br />
 The PDF generation agent, which relies on a LaTeX backend, currently has issues rendering complex mathematical formulas, particularly those involving scientific notation.
 This is a known bug. The agent may fail to correctly escape special characters or use the appropriate LaTeX math environments, resulting in compilation errors or improperly formatted output.<br /><br />
-This is a high-priority area for contributions. If you have expertise in Python-to-LaTeX generation, your help in resolving this issue would be greatly appreciated. <br /><br />Please see the Contributing section for more details.
+This is a high-priority area for contributions. If you have expertise in Python-to-LaTeX generation, your help in resolving this issue would be greatly appreciated. <br /><br />Please see the Contributing section for more details.<br /><br />
+
+## Overview
+
+The Theory of Everything (ToE) is an ambitious project that combines advanced physics concepts from quantum field theory, general relativity, particle physics, and cosmology with computational visualization techniques to explore and demonstrate the mathematical structure of the universe.<br /><br />
+
 ✨ Features<br /><br />
 Interactive Formula Explorer: Browse, inspect components, and compare the core mathematical formulas that constitute the ToE.<br /><br />
 Dynamic Visualizations: Generate and interact with 2D, 3D, and 4D visualizations of complex physical concepts like spacetime curvature, quantum foam, and the Higgs field.
@@ -35,12 +40,6 @@ Advanced 4D Concepts: Explore projections of 4D hypercubes and animated evolutio
 On-the-fly Documentation: Generate LaTeX source files and attempt to compile PDF documents for any formula (see known issue above).<br /><br />
 Unified API: A clear backend API (ToEUnified) that separates the physics logic from the UI.compile PDF documents for any formula (see known issue above).<br /><br />
 Unified API: A clear backend API (ToEUnified) that separates the physics logic from the UI.<br /><br />
-
-
-## Overview
-
-The Theory of Everything (ToE) is an ambitious project that combines advanced physics concepts from quantum field theory, general relativity, particle physics, and cosmology with computational visualization techniques to explore and demonstrate the mathematical structure of the universe.
-
 The project provides:
 - Mathematical formulations of all fundamental physical interactions
 - Interactive visualizations of complex physics concepts
