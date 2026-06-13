@@ -568,6 +568,14 @@ with ui.column().classes("w-full max-w-5xl mx-auto p-4"):
             stop_note("Precision is the display: θ to a thousandth of "
                       "a degree on the readout.")
 
+        with concept("SCENE DECK — a true three.js stage (ui.scene)",
+                     "Orbit the camera with your mouse; drive the cube, "
+                     "globe, or pyramid with plane↔axis dials.",
+                     icon="view_in_ar"):
+            dd.build_scene_deck()
+            stop_note("In 3D every plane has a normal axis — that is "
+                      "the luxury the next deck takes away.")
+
         with concept("XYZ DECK — mastery over 3D, then ENGAGE 4D",
                      "Cube, globe, or pyramid under three plane "
                      "controllers; one button adds the other three "

@@ -552,6 +552,128 @@ def build_xyz_deck():
 
 
 # ---------------------------------------------------------------------------
+# Instrument 2b: SCENE DECK -- a true three.js scene (ui.scene)
+# ---------------------------------------------------------------------------
+
+
+def build_scene_deck():
+    """Native three.js 3D via NiceGUI's ui.scene: orbit the camera with
+    the mouse, drive the object with the plane dials. Each 3D rotation
+    plane has a normal axis -- the labels show both, because that
+    correspondence is exactly what 4D takes away."""
+    state = dict(rx=0.0, ry=0.0, rz=0.0, shape="Cube",
+                 auto=False, auto_speed=0.8)
+
+    ui.markdown(
+        "This deck is a **real 3D engine** (three.js through NiceGUI's "
+        "`ui.scene`): drag to orbit, scroll to zoom — the camera is "
+        "yours. The dials rotate the *object*, one plane at a time. "
+        "Note the double labels: in 3D every rotation plane has a "
+        "unique normal axis (yz↔x, xz↔y, xy↔z). That luxury is what "
+        "4D removes — which is why the tesseract next door must be "
+        "*projected*, not handed to the engine."
+    ).classes("text-sm")
+
+    scene_holder = dict(scene=None, group=None)
+
+    def build_shape(scene):
+        with scene.group() as grp:
+            if state["shape"] == "Cube":
+                scene.box(1.6, 1.6, 1.6).material("#58a6ff", 0.85)
+            elif state["shape"] == "Globe":
+                scene.sphere(1.1).material("#3fb950", 0.55)
+                # equator + meridian rings so the spin is visible
+                t = np.linspace(0, 2 * np.pi, 48)
+                rings = [
+                    [[1.15 * np.cos(a), 1.15 * np.sin(a), 0] for a in t],
+                    [[1.15 * np.cos(a), 0, 1.15 * np.sin(a)] for a in t],
+                ]
+                for ring in rings:
+                    for a, b in zip(ring[:-1], ring[1:]):
+                        scene.line(a, b).material("#e6edf3")
+            else:  # Pyramid: cylinder with 4 radial segments, apex r=0
+                scene.cylinder(0.0, 1.3, 1.8, 4) \
+                    .material("#a371f7", 0.85) \
+                    .rotate(np.pi / 2, 0, np.pi / 4)
+        return grp
+
+    def rebuild():
+        scene = scene_holder["scene"]
+        scene.clear()
+        with scene:
+            scene.spot_light(distance=120, intensity=0.6) \
+                .move(-4, 0, 6)
+            # world axes, labeled by color
+            scene.line([0, 0, 0], [2.6, 0, 0]).material("#f85149")
+            scene.line([0, 0, 0], [0, 2.6, 0]).material("#3fb950")
+            scene.line([0, 0, 0], [0, 0, 2.6]).material("#58a6ff")
+            scene_holder["group"] = build_shape(scene)
+        apply_rotation()
+
+    def apply_rotation():
+        grp = scene_holder["group"]
+        if grp is not None:
+            grp.rotate(np.radians(state["rx"]), np.radians(state["ry"]),
+                       np.radians(state["rz"]))
+        readout.text = (f"YZ(x) {state['rx']:07.3f}°   "
+                        f"XZ(y) {state['ry']:07.3f}°   "
+                        f"XY(z) {state['rz']:07.3f}°")
+
+    with ui.scene(width=860, height=460, grid=True) \
+            .classes("w-full rounded-lg") as scene:
+        scene_holder["scene"] = scene
+
+    readout = ui.label().classes("hud-readout")
+
+    with ui.row().classes("items-center gap-4 flex-wrap mt-1"):
+        shape_toggle = ui.toggle(["Cube", "Globe", "Pyramid"],
+                                 value="Cube") \
+            .props("rounded unelevated toggle-color=primary ripple")
+
+        def set_shape(e):
+            if e.value:
+                state["shape"] = e.value
+                rebuild()
+        shape_toggle.on_value_change(set_shape)
+
+        auto_sw = ui.switch("auto-orbit object")
+        auto_sw.on_value_change(lambda e: state.update(auto=e.value))
+        with ui.column().classes("items-center"):
+            spd = ui.knob(0.8, min=0.1, max=6.0, step=0.1,
+                          show_value=True) \
+                .props("size=52px color=secondary track-color=grey-9")
+            ui.label("auto [°/tick]").classes("text-xs text-gray-500")
+            spd.on_value_change(
+                lambda e: state.update(auto_speed=float(e.value)))
+
+    sliders = {}
+    with ui.row().classes("gap-6 flex-wrap items-end w-full mt-1"):
+        for key, plane, axis in (("rx", "YZ", "x"), ("ry", "XZ", "y"),
+                                 ("rz", "XY", "z")):
+            with ui.column().classes("grow min-w-40"):
+                s = ui.slider(min=0.0, max=360.0, step=0.1, value=0.0) \
+                    .props("label-always color=primary")
+                ui.label(f"plane {plane}  ↔  axis {axis}").classes(
+                    "text-xs text-gray-500")
+
+                def on_slide(e, key=key):
+                    state[key] = float(e.value)
+                    apply_rotation()
+                s.on_value_change(on_slide)
+                sliders[key] = s
+
+    def tick():
+        if state["auto"]:
+            for key in ("rx", "ry", "rz"):
+                state[key] = (state[key] + state["auto_speed"]) % 360
+                sliders[key].value = round(state[key], 1)
+            apply_rotation()
+    ui.timer(0.1, tick)
+
+    ui.timer(0.5, rebuild, once=True)   # build after the scene mounts
+
+
+# ---------------------------------------------------------------------------
 # Instrument 3: DRAW DECK -- pointer/touch drawing, then spin it
 # ---------------------------------------------------------------------------
 
