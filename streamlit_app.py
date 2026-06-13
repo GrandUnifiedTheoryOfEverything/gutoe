@@ -27,6 +27,11 @@ from unified.toe_vis import VisualizationTools
 # equation, glossary, and propositions)
 from toe_math import master_equation as master_eq
 
+try:
+    from version import VERSION
+except ImportError:
+    VERSION = "2.0.0"
+
 # Plotly powers the interactive visualizations; degrade gracefully if absent
 try:
     from visualization import plotly_4d as p4d
@@ -416,6 +421,11 @@ def main():
          "Visualizations", "Documentation", "Conclusion & Assessment",
          "References & About"]
     )
+
+    st.sidebar.caption(
+        f"v{VERSION} — Streamlit delivery. Also available: the panel "
+        "dashboard (`python3 dash_app.py`) and the Control Room "
+        "(`python3 nicegui_app.py`).")
 
     if not PLOTLY_AVAILABLE:
         st.sidebar.warning("Plotly is not installed; interactive "

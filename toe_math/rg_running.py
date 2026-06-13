@@ -86,16 +86,22 @@ B2_MSSM = np.array([
 ])
 
 
-def boundary_conditions():
+def boundary_conditions(alpha_em_inv=ALPHA_EM_INV_MZ,
+                        sin2_theta_w=SIN2_THETA_W_MZ,
+                        alpha_s=ALPHA_S_MZ):
     """alpha_i^-1 at M_Z in GUT normalization.
 
     alpha_2^-1 = sin^2(theta_W) * alpha_em^-1
     alpha_1^-1 = (3/5) cos^2(theta_W) * alpha_em^-1   (alpha_1 = 5/3 alpha_Y)
     alpha_3^-1 = 1 / alpha_s
+
+    The PDG defaults can be overridden to explore the sensitivity of the
+    unification result to the experimental inputs (used by the Control
+    Room UI's expert mode).
     """
-    a2_inv = SIN2_THETA_W_MZ * ALPHA_EM_INV_MZ
-    a1_inv = (3.0 / 5.0) * (1.0 - SIN2_THETA_W_MZ) * ALPHA_EM_INV_MZ
-    a3_inv = 1.0 / ALPHA_S_MZ
+    a2_inv = sin2_theta_w * alpha_em_inv
+    a1_inv = (3.0 / 5.0) * (1.0 - sin2_theta_w) * alpha_em_inv
+    a3_inv = 1.0 / alpha_s
     return np.array([a1_inv, a2_inv, a3_inv])
 
 
@@ -119,7 +125,9 @@ def _run_two_loop_segment(alpha_inv_0, b1, b2, mu_0, mu_grid):
     return sol.y
 
 
-def run_couplings(model="MSSM", loops=1, m_susy=1000.0, mu_max=1.0e18, n=400):
+def run_couplings(model="MSSM", loops=1, m_susy=1000.0, mu_max=1.0e18,
+                  n=400, alpha_em_inv=ALPHA_EM_INV_MZ,
+                  sin2_theta_w=SIN2_THETA_W_MZ, alpha_s=ALPHA_S_MZ):
     """Run the three GUT-normalized inverse couplings from M_Z to mu_max.
 
     Parameters
@@ -131,6 +139,8 @@ def run_couplings(model="MSSM", loops=1, m_susy=1000.0, mu_max=1.0e18, n=400):
     mu_max : upper end of the running [GeV]; keep <= ~1e18 to stay below
         the Planck scale and away from any Landau-like growth.
     n : number of (logarithmically spaced) grid points.
+    alpha_em_inv, sin2_theta_w, alpha_s : experimental inputs at M_Z;
+        PDG 2024 defaults, overridable for sensitivity exploration.
 
     Returns
     -------
@@ -144,7 +154,8 @@ def run_couplings(model="MSSM", loops=1, m_susy=1000.0, mu_max=1.0e18, n=400):
         raise ValueError("loops must be 1 or 2")
 
     mu = np.geomspace(M_Z, mu_max, n)
-    a0 = boundary_conditions()
+    a0 = boundary_conditions(alpha_em_inv=alpha_em_inv,
+                             sin2_theta_w=sin2_theta_w, alpha_s=alpha_s)
 
     if model == "SM":
         segments = [(B1_SM, B2_SM, M_Z, mu)]

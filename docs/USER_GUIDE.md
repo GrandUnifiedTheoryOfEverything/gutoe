@@ -13,14 +13,19 @@ cd gutoe
 pip install -r requirements.txt
 ```
 
-## 2. The interactive application
+## 2. The interactive applications (three deliveries, one physics core)
 
-```bash
-streamlit run streamlit_app.py
-```
+All three UIs compute from the same modules (`toe_math/`), so they
+cannot disagree with each other, the tests, or the paper.
+
+| Delivery | Command | Character |
+|---|---|---|
+| **Streamlit explorer** | `streamlit run streamlit_app.py` | Page-based reference UI (details below) |
+| **Dash dashboard** | `python3 dash_app.py` → port 8050 | Panel layout for side-by-side scientific reading; live RG metrics; two pure-D3.js panels (SVG tesseract you can steer by dragging, force-directed structure map of the composite action) |
+| **NiceGUI Control Room** | `python3 nicegui_app.py` → port 8051 | A recursive concept tree: every concept expands into its component parts with increasing complexity, terminating in interactive moments driven by knobs and levers. The Basic/Advanced/Expert menu controls instrumentation depth; Expert mode turns the PDG inputs (α_em⁻¹, sin²θ_W, α_s) into levers for sensitivity exploration |
 
 (`streamlit run gutoeUIUX.py` is an equivalent compatibility entry
-point.) The app serves these pages:
+point.) The Streamlit app serves these pages:
 
 | Page | Content |
 |---|---|

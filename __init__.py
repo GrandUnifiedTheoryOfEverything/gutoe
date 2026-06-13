@@ -27,4 +27,7 @@ except ImportError:
     LaTeXAgent = PDFAgent = AgentTools = None
 
 # Version information
-__version__ = '1.0.0'
+try:
+    from version import VERSION as __version__
+except ImportError:
+    __version__ = '2.0.0'

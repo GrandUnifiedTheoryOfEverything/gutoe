@@ -7,11 +7,13 @@ and [docs/index.md](docs/index.md).
 
 | Command | What it does |
 |---|---|
-| `streamlit run streamlit_app.py` | The interactive application (`gutoeUIUX.py` is an equivalent shim) |
+| `streamlit run streamlit_app.py` | UI delivery 1: Streamlit explorer (`gutoeUIUX.py` is an equivalent shim) |
+| `python3 dash_app.py` | UI delivery 2: Dash scientific dashboard with D3.js panels (port 8050) |
+| `python3 nicegui_app.py` | UI delivery 3: NiceGUI Control Room — expandable concept tree with dials and levers (port 8051) |
 | `python3 -m toe_math.rg_running` | RG unification analysis + proton lifetime (the quantitative centerpiece) |
 | `python3 -m toe_math.gut_embedding` | SU(5)/SO(10) embedding arithmetic |
 | `bash paper/build.sh` | Compile the typeset paper to `paper/gutoe.pdf` |
-| `python3 -m pytest tests/ -q` | Physics regression tests and app smoke tests |
+| `python3 -m pytest tests/test_rg_running.py tests/test_app_pages.py tests/test_dashboards.py -q` | Physics regressions and UI smoke tests |
 
 ## Layout
 

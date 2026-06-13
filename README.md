@@ -74,9 +74,21 @@ computable. Order-of-magnitude caveats and methods:
 ```bash
 pip install -r requirements.txt
 
-# The interactive application (8 pages incl. Master Equation,
+# UI delivery 1 — Streamlit explorer (8 pages incl. Master Equation,
 # Gauge Unification, interactive 4D visualizations)
 streamlit run streamlit_app.py
+
+# UI delivery 2 — Dash scientific dashboard: panel layout, live RG
+# metrics, plus pure-D3.js panels (rotating tesseract, force-directed
+# structure map of the composite action)        -> http://127.0.0.1:8050
+python3 dash_app.py
+
+# UI delivery 3 — NiceGUI Control Room: a recursive concept tree where
+# every concept expands into its parts with increasing complexity and
+# ends in an interactive moment; knobs, levers, and a Basic/Advanced/
+# Expert menu (Expert turns the PDG inputs into levers)
+#                                               -> http://127.0.0.1:8051
+python3 nicegui_app.py
 
 # Reproduce the headline numbers in the table above
 python3 -m toe_math.rg_running
@@ -92,8 +104,11 @@ bash paper/build.sh
 
 ```
 gutoe/
-├── streamlit_app.py        # the interactive application (canonical entry)
+├── streamlit_app.py        # UI delivery 1: Streamlit explorer
 ├── gutoeUIUX.py            # compatibility shim for the same app
+├── dash_app.py             # UI delivery 2: Dash dashboard (+ assets/ D3.js)
+├── nicegui_app.py          # UI delivery 3: NiceGUI Control Room
+├── version.py              # shared project version (2.0.0)
 ├── toe_math/               # physics computations
 │   ├── rg_running.py       #   RG unification + proton lifetime
 │   ├── gut_embedding.py    #   SU(5)/SO(10) group theory
