@@ -19,9 +19,21 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 # Import the Theory of Everything components
-from unified.toe_unified import ToEUnified 
+from unified.toe_unified import ToEUnified
 from unified.toe_formulas import FormulaTools
 from unified.toe_vis import VisualizationTools
+
+# Formal presentation content (single source of truth for the master
+# equation, glossary, and propositions)
+from toe_math import master_equation as master_eq
+
+# Plotly powers the interactive visualizations; degrade gracefully if absent
+try:
+    from visualization import plotly_4d as p4d
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    p4d = None
+    PLOTLY_AVAILABLE = False
 
 # Set page configuration
 st.set_page_config(
@@ -92,6 +104,41 @@ def generate_visualization(vis_name, params=None):
         st.success(f"Visualization saved to: {path}")
     else:
         st.error(f"Failed to generate visualization: {path}")
+
+def read_doc(name):
+    """Read a markdown document from docs/, returning None if missing."""
+    path = os.path.join("docs", name)
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return f.read()
+    return None
+
+
+def create_interactive_visualization_plotly(vis_name):
+    """Interactive Plotly visualization with parameter controls."""
+    if vis_name == '4d_spacetime_curvature':
+        mass = st.slider("Mass (solar masses)", 0.1, 10.0, 1.0, 0.1)
+        grid = st.slider("Grid size", 10, 80, 40, 5)
+        return p4d.spacetime_curvature_figure(mass=mass, grid=grid)
+    elif vis_name == 'quantum_foam_3d':
+        amplitude = st.slider("Amplitude", 0.1, 1.0, 0.5, 0.1)
+        frequency = st.slider("Frequency", 0.5, 5.0, 2.0, 0.1)
+        grid = st.slider("Grid size", 10, 80, 40, 5)
+        return p4d.quantum_foam_figure(amplitude=amplitude,
+                                       frequency=frequency, grid=grid)
+    elif vis_name == 'extra_dimensions_3d':
+        num_dimensions = st.slider("Number of dimensions", 4, 11, 10, 1)
+        grid = st.slider("Grid size", 20, 100, 60, 5)
+        return p4d.extra_dimensions_figure(num_dimensions=num_dimensions,
+                                           grid=grid)
+    elif vis_name == '4d_higgs_field':
+        grid = st.slider("Grid size", 20, 100, 60, 5)
+        return p4d.higgs_potential_figure(grid=grid)
+    elif vis_name == 'gauge_field_4d':
+        grid = st.slider("Grid size", 5, 12, 8, 1)
+        return p4d.gauge_field_figure(grid=grid)
+    return None
+
 
 def create_interactive_visualization(vis_name):
     """Create an interactive visualization using matplotlib"""
@@ -365,35 +412,202 @@ def main():
     # Navigation
     page = st.sidebar.selectbox(
         "Navigation",
-        ["Home", "Formulas", "Visualizations", "Documentation", "About"]
+        ["Home", "Master Equation", "Gauge Unification (RG)", "Formulas",
+         "Visualizations", "Documentation", "Conclusion & Assessment",
+         "References & About"]
     )
+
+    if not PLOTLY_AVAILABLE:
+        st.sidebar.warning("Plotly is not installed; interactive "
+                           "visualizations are degraded. Run "
+                           "`pip install plotly kaleido`.")
 
     # Home page
     if page == "Home":
-        st.title("🌌 Theory of Everything Explorer")
+        st.title("Theory of Everything Explorer")
         st.markdown("""
-        Welcome to the Theory of Everything Explorer! This application allows you to explore
-        and visualize the Theory of Everything, a unified framework for physics that combines
-        various physical theories into a single model.
+        A **pedagogical and computational framework** that organizes the
+        standard actions of fundamental physics — general relativity, the
+        Standard Model matter and gauge sectors, and the formal loop
+        expansion — into a single composite expression, and *computes* the
+        piece of unification physics that is honestly computable at this
+        level: renormalization-group gauge-coupling unification and the
+        proton-lifetime estimate it implies.
 
-        ### Features
+        This is **not** a theory of everything, and it does not claim to
+        unify physics; see *Conclusion & Assessment* for the honest scope,
+        including the independent academic evaluation this project
+        incorporates.
 
-        - **Explore Formulas**: View and explore the mathematical formulas that make up the Theory of Everything
-        - **Generate Visualizations**: Create visualizations of various aspects of the theory
-        - **Generate Documentation**: Generate LaTeX and PDF documentation for the theory
-        - **Interactive Visualizations**: Interact with 3D and 4D visualizations of the theory
+        ### What you can do here
 
-        Use the sidebar to navigate through the application.
+        - **Master Equation** — the composite action presented as a formal
+          Definition, with a complete symbol glossary
+        - **Gauge Unification (RG)** — run the couplings yourself: SM vs.
+          MSSM, 1 vs. 2 loops, adjustable SUSY threshold
+        - **Formulas** — the catalog of sector actions with LaTeX rendering
+        - **Visualizations** — interactive 4D techniques: tesseract
+          projection, hyperplane slicing, and animated field evolution
+        - **Documentation** — the formal documents and the compiled paper
         """)
 
-        # Display a sample visualization
-        st.subheader("Sample Visualization: 4D Spacetime Curvature")
-        fig = create_spacetime_curvature_vis()
-        st.pyplot(fig)
+        st.subheader("Sample: spacetime curvature near a point mass")
+        if PLOTLY_AVAILABLE:
+            st.plotly_chart(p4d.spacetime_curvature_figure(),
+                            use_container_width=True)
+        else:
+            fig = create_spacetime_curvature_vis()
+            st.pyplot(fig)
+
+    # Master Equation page
+    elif page == "Master Equation":
+        st.title("The Composite Action")
+
+        st.latex(master_eq.MASTER_EQUATION_ALIGNED)
+
+        st.markdown(master_eq.DEFINITION_TEXT)
+        st.warning(master_eq.WHAT_IT_IS_NOT)
+
+        st.subheader("Symbol glossary")
+        glossary_md = "| Symbol | Meaning | Units / value | Appears in |\n"
+        glossary_md += "|---|---|---|---|\n"
+        for entry in master_eq.GLOSSARY:
+            glossary_md += (f"| {entry['symbol']} | {entry['name']} "
+                            f"| {entry['units']} | {entry['appears']} |\n")
+        st.markdown(glossary_md)
+
+        st.subheader("The sectors, one by one")
+        with st.expander("Gravity sector (Einstein–Hilbert) — and Remark 1"):
+            st.latex(master_eq.MASTER_EQUATION_LINES[1])
+            st.markdown(master_eq.REMARK_GRAVITY_PROGRAMS)
+        with st.expander("Matter sector (Dirac + Higgs)"):
+            st.latex(master_eq.MASTER_EQUATION_LINES[2])
+            st.latex(master_eq.HIGGS_POTENTIAL)
+            st.markdown("Fermions and the Higgs doublet, minimally coupled "
+                        "to gravity through $\\sqrt{-g}$ and to the gauge "
+                        "fields through the covariant derivative $D_\\mu$.")
+        with st.expander("Gauge sector (Yang–Mills)"):
+            st.latex(master_eq.MASTER_EQUATION_LINES[3])
+            st.latex(master_eq.FIELD_STRENGTH)
+            st.markdown("The Standard Model gauge group is "
+                        "$SU(3)_c \\times SU(2)_L \\times U(1)_Y$. The "
+                        "*unifying* group an actual GUT requires is the "
+                        "subject of the **Gauge Unification (RG)** page.")
+        with st.expander("Quantum sector (loop expansion)"):
+            st.latex(master_eq.MASTER_EQUATION_LINES[4])
+            st.markdown("The organizing statement of perturbative quantum "
+                        "corrections. It presupposes a perturbatively "
+                        "consistent theory — precisely what the gravity "
+                        "sector lacks (Goroff–Sagnotti 1986); see Open "
+                        "Problem 3 in docs/THEORY.md.")
+
+        st.subheader("Propositions (computed, not asserted)")
+        st.markdown(master_eq.PROPOSITION_RG)
+
+    # Gauge Unification page
+    elif page == "Gauge Unification (RG)":
+        st.title("Gauge-Coupling Unification")
+        st.markdown("""
+        The quantitative centerpiece of this project: a from-scratch
+        reproduction of the renormalization-group analysis showing the
+        Standard Model couplings *nearly* meet, while their MSSM
+        counterparts *unify*. Every number on this page is computed live by
+        `toe_math/rg_running.py` (reproduce offline with
+        `python3 -m toe_math.rg_running`).
+        """)
+
+        from toe_math import rg_running as rg
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            loops = st.radio("Loop order", [1, 2], index=1, horizontal=True)
+        with col2:
+            m_susy = st.select_slider(
+                "SUSY threshold m_SUSY [GeV]",
+                options=[300, 500, 750, 1000, 1500, 2000, 3000, 5000, 10000],
+                value=1000)
+        with col3:
+            show = st.multiselect("Models", ["SM", "MSSM"],
+                                  default=["SM", "MSSM"])
+
+        if show:
+            fig = rg.make_rg_figure_plotly(models=show, loops=loops,
+                                           m_susy=float(m_susy))
+            st.plotly_chart(fig, use_container_width=True)
+
+        for model in show:
+            mu, a_inv = rg.run_couplings(model=model, loops=loops,
+                                         m_susy=float(m_susy))
+            uni = rg.find_unification(mu, a_inv)
+            st.subheader(f"{model} ({loops}-loop)")
+            c1, c2, c3, c4 = st.columns(4)
+            if uni["M_GUT"] is not None:
+                c1.metric("M_GUT (geometric mean)", f"{uni['M_GUT']:.2e} GeV")
+                c2.metric("α_GUT⁻¹", f"{uni['alpha_gut_inv']:.1f}")
+                c3.metric("Mismatch at crossing",
+                          f"{100 * uni['mismatch']:.1f}%")
+                tau = rg.proton_lifetime_years(uni["M_GUT"],
+                                               1.0 / uni["alpha_gut_inv"])
+                c4.metric("τ_p estimate", f"{tau:.1e} yr")
+                if uni["unifies"]:
+                    verdict = (f"Couplings unify (mismatch "
+                               f"{100 * uni['mismatch']:.1f}% < 3%). ")
+                    if tau > rg.SUPERK_TAU_P_BOUND_YR:
+                        st.success(verdict + f"The proton-lifetime estimate "
+                                   f"{tau:.1e} yr is above the "
+                                   f"Super-Kamiokande bound "
+                                   f"{rg.SUPERK_TAU_P_BOUND_YR:.1e} yr — "
+                                   "not excluded.")
+                    else:
+                        st.error(verdict + f"But τ_p ≈ {tau:.1e} yr violates "
+                                 f"the Super-K bound "
+                                 f"{rg.SUPERK_TAU_P_BOUND_YR:.1e} yr — this "
+                                 "scenario is excluded.")
+                else:
+                    st.error(f"No unification: α₃⁻¹ misses the α₁ = α₂ "
+                             f"crossing by {100 * uni['mismatch']:.1f}%. "
+                             f"The implied scale would give τ_p ≈ {tau:.1e} "
+                             "yr — excluded by Super-Kamiokande "
+                             "(the classic demise of minimal non-SUSY "
+                             "SU(5)).")
+        st.caption("τ_p ~ M_GUT⁴/(α_GUT² m_p⁵) is a dimensional-analysis "
+                   "estimate, uncertain by 1–2 orders of magnitude from "
+                   "hadronic matrix elements; comparisons are "
+                   "order-of-magnitude only. Yukawa contributions to the "
+                   "2-loop running are neglected.")
+
+        with st.expander("Where does the 5/3 in α₁ come from? "
+                         "(SU(5)/SO(10) embedding)"):
+            from toe_math import gut_embedding as gut
+            st.markdown("One Standard Model generation fits exactly into "
+                        "$\\bar{\\mathbf{5}} \\oplus \\mathbf{10}$ of "
+                        "SU(5):")
+            st.markdown(gut.assignment_table_markdown())
+            s = gut.summary()
+            st.markdown(
+                f"From this table, $\\mathrm{{Tr}}(Y^2) = {s['tr_Y2']}$ "
+                f"over a generation while $\\mathrm{{Tr}}(T_3^2) = 2$, "
+                f"forcing the normalization $\\alpha_1 = "
+                f"\\tfrac{{{s['normalization_factor'].numerator}}}"
+                f"{{{s['normalization_factor'].denominator}}}\\,"
+                "\\alpha_Y$ used above — derived, not assumed. All four "
+                "gauge-anomaly sums vanish: "
+                f"$\\sum Y = {s['anomalies']['sum_Y']}$, "
+                f"$\\sum Y^3 = {s['anomalies']['sum_Y3']}$, "
+                f"$SU(3)^2$–$Y = {s['anomalies']['su3_su3_Y']}$, "
+                f"$SU(2)^2$–$Y = {s['anomalies']['su2_su2_Y']}$. "
+                "In SO(10) the spinor branches as $\\mathbf{16} = "
+                "\\mathbf{10} \\oplus \\bar{\\mathbf{5}} \\oplus "
+                "\\mathbf{1}$ — the singlet is the right-handed neutrino. "
+                "Reproduce with `python3 -m toe_math.gut_embedding`; "
+                "details in docs/GUT_EMBEDDING.md.")
 
     # Formulas page
     elif page == "Formulas":
-        st.title("📝 Theory of Everything Formulas")
+        st.title("Formula Catalog")
+        st.caption("Transcriptions of established sector actions; see the "
+                   "Master Equation page for the formal presentation and "
+                   "docs/THEORY.md for sources.")
 
         # List available formulas
         formulas = api.list_formulas()
@@ -448,7 +662,7 @@ def main():
 
     # Visualizations page
     elif page == "Visualizations":
-        st.title("🔮 Theory of Everything Visualizations")
+        st.title("Visualizations")
 
         # Create tabs for different visualization types
         viz_tab1, viz_tab2 = st.tabs(["Standard Visualizations", "Advanced 4D Visualizations"])
@@ -468,124 +682,128 @@ def main():
 
             # Create interactive visualization
             st.subheader("Interactive Visualization")
-            fig = create_interactive_visualization(vis_name)
-            if fig:
-                st.pyplot(fig)
-
-                # Save visualization
-                if st.button("Save Visualization"):
-                    # Get parameters from sliders
-                    params = {}
-                    if vis_name == '4d_spacetime_curvature':
-                        params = {
-                            'mass': st.session_state.get('mass', 1.0),
-                            'grid_size': st.session_state.get('grid_size', 20)
-                        }
-                    elif vis_name == 'quantum_foam_3d':
-                        params = {
-                            'amplitude': st.session_state.get('amplitude', 0.5),
-                            'frequency': st.session_state.get('frequency', 2.0),
-                            'grid_size': st.session_state.get('grid_size', 20)
-                        }
-                    elif vis_name == 'extra_dimensions_3d':
-                        params = {
-                            'num_dimensions': st.session_state.get('num_dimensions', 10),
-                            'grid_size': st.session_state.get('grid_size', 20)
-                        }
-                    elif vis_name == '4d_higgs_field':
-                        params = {
-                            'grid_size': st.session_state.get('grid_size', 30)
-                        }
-                    elif vis_name == 'gauge_field_4d':
-                        params = {
-                            'grid_size': st.session_state.get('grid_size', 10)
-                        }
-
-                    # Generate and save the visualization
-                    generate_visualization(vis_name, params)
+            if PLOTLY_AVAILABLE:
+                fig = create_interactive_visualization_plotly(vis_name)
+                if fig:
+                    st.plotly_chart(fig, use_container_width=True)
+                    if st.button("Export as standalone HTML"):
+                        os.makedirs("gfx/html", exist_ok=True)
+                        html_path = f"gfx/html/{vis_name}.html"
+                        fig.write_html(html_path)
+                        st.success(f"Saved interactive figure to {html_path}")
+                else:
+                    generate_visualization(vis_name)
             else:
-                # Generate static visualization
-                generate_visualization(vis_name)
+                fig = create_interactive_visualization(vis_name)
+                if fig:
+                    st.pyplot(fig)
+                else:
+                    generate_visualization(vis_name)
 
         with viz_tab2:
             st.header("Advanced 4D Visualizations")
             st.markdown("""
-            These advanced visualizations represent 4-dimensional concepts in physics,
-            showing how we can represent higher dimensions through various techniques.
+            Two honest techniques display four dimensions on a screen:
+            **projection** (rotate in 4-space, then perspective-project to
+            3D, exactly as 3D is projected to your 2D screen) and
+            **slicing** (intersect with a hyperplane $w = $ const and sweep
+            $w$). Each figure states which technique it uses. All are fully
+            interactive: drag to rotate, scroll to zoom, press Play to
+            animate.
             """)
 
-            # Create a selection for different 4D visualizations
-            advanced_vis = st.selectbox(
-                "Select a 4D visualization",
-                ["4D Hypercube Projection", "4D Quantum Field", "4D Spacetime Evolution"]
-            )
+            if not PLOTLY_AVAILABLE:
+                st.error("These interactive figures require Plotly: "
+                         "`pip install plotly kaleido`.")
+            else:
+                advanced_vis = st.selectbox(
+                    "Select a 4D visualization",
+                    ["4D Hypercube (projection)",
+                     "4D Hypercube (slicing)",
+                     "4D Quantum Field (slicing)",
+                     "4D Spacetime Evolution (time animation)"]
+                )
 
-            # Check if the visualization files exist, otherwise offer to create them
-            if advanced_vis == "4D Hypercube Projection":
-                file_path = "gfx/4d/4d_hypercube_projection.png"
-                if os.path.exists(file_path):
-                    st.image(file_path, caption="4D Hypercube Projection")
+                if advanced_vis == "4D Hypercube (projection)":
+                    st.plotly_chart(p4d.tesseract_figure(),
+                                    use_container_width=True)
                     st.markdown("""
-                    This visualization shows a projection of a 4D hypercube (tesseract) into 3D space.
-                    The fourth dimension is represented through perspective projection.
+                    The 16 vertices and 32 edges of the tesseract
+                    $\\{-1,1\\}^4$ under a *double rotation* (simultaneous
+                    rotations in the $(x,w)$ and $(y,w)$ planes — a motion
+                    with no 3D analogue), perspective-projected to 3D with
+                    scale $d/(d-w)$. Vertex color encodes the 4th
+                    coordinate $w$: the apparent "inner" and "outer" cubes
+                    swap as the rotation carries vertices through $w$.
                     """)
-                else:
-                    st.warning("Visualization not found. Click the button below to generate it.")
-                    if st.button("Generate 4D Hypercube Projection"):
-                        with st.spinner("Generating visualization..."):
-                            try:
-                                from create_4d_vis import create_4d_projection
-                                file_path = create_4d_projection()
-                                st.success(f"Visualization created: {file_path}")
-                                st.image(file_path, caption="4D Hypercube Projection")
-                            except Exception as e:
-                                st.error(f"Error generating visualization: {str(e)}")
 
-            elif advanced_vis == "4D Quantum Field":
-                file_path = "gfx/4d/4d_quantum_field.png"
-                if os.path.exists(file_path):
-                    st.image(file_path, caption="4D Quantum Field")
+                elif advanced_vis == "4D Hypercube (slicing)":
+                    w = st.slider("Hyperplane position w", -1.5, 1.5, 0.0,
+                                  0.05)
+                    st.plotly_chart(p4d.tesseract_slice_figure(w),
+                                    use_container_width=True)
                     st.markdown("""
-                    This visualization shows a 4D quantum field represented as multiple 3D slices at different
-                    values of the fourth dimension (W). Each slice shows how the field varies in 3D space
-                    at a specific point in the fourth dimension.
+                    The 3D cross-section of the tesseract with the
+                    hyperplane $w = $ const. Because the tesseract is a
+                    cube $\\times$ interval, every slice with $|w| \\le 1$
+                    is the same unit cube, and the slice vanishes abruptly
+                    at $|w| = 1$ — the 4D analogue of slicing a cube into
+                    squares. Sweep the slider to *feel* the 4th dimension
+                    as the sweep parameter.
                     """)
-                else:
-                    st.warning("Visualization not found. Click the button below to generate it.")
-                    if st.button("Generate 4D Quantum Field"):
-                        with st.spinner("Generating visualization..."):
-                            try:
-                                from create_4d_vis import create_4d_quantum_field
-                                file_path = create_4d_quantum_field()
-                                st.success(f"Visualization created: {file_path}")
-                                st.image(file_path, caption="4D Quantum Field")
-                            except Exception as e:
-                                st.error(f"Error generating visualization: {str(e)}")
 
-            elif advanced_vis == "4D Spacetime Evolution":
-                file_path = "gfx/4d/4d_spacetime_evolution.gif"
-                if os.path.exists(file_path):
-                    st.image(file_path, caption="4D Spacetime Evolution")
+                elif advanced_vis == "4D Quantum Field (slicing)":
+                    st.plotly_chart(p4d.quantum_field_4d_figure(),
+                                    use_container_width=True)
                     st.markdown("""
-                    This animation shows the evolution of spacetime in 4D, where the fourth dimension is time.
-                    The surface represents a slice of spacetime that evolves over time, showing how gravitational
-                    waves propagate through spacetime.
+                    A scalar field $f(x, y; w)$ on four coordinates,
+                    displayed one hyperplane $w = $ const at a time. The
+                    animation sweeps $w$, so the surface you see morphs as
+                    the slice moves through the 4th dimension — each frame
+                    is genuinely a different 4D location, not a camera
+                    move.
                     """)
-                else:
-                    st.warning("Animation not found. Click the button below to generate it.")
-                    if st.button("Generate 4D Spacetime Evolution"):
-                        with st.spinner("Generating animation (this may take a minute)..."):
-                            try:
-                                from create_4d_vis import create_4d_animation
-                                file_path = create_4d_animation()
-                                st.success(f"Animation created: {file_path}")
-                                st.image(file_path, caption="4D Spacetime Evolution")
-                            except Exception as e:
-                                st.error(f"Error generating animation: {str(e)}")
+
+                else:  # 4D Spacetime Evolution
+                    st.plotly_chart(p4d.spacetime_evolution_figure(),
+                                    use_container_width=True)
+                    st.markdown("""
+                    Here the 4th coordinate is *time*: a curvature ripple
+                    $h(x, y; t)$ propagates outward as the animation plays.
+                    The camera is yours — rotate and zoom while it runs
+                    (this replaces the old pre-rendered GIF whose viewpoint
+                    was baked in).
+                    """)
 
     # Documentation page
     elif page == "Documentation":
-        st.title("📚 Theory of Everything Documentation")
+        st.title("Documentation")
+
+        st.markdown("""
+        The canonical documents (in `docs/`):
+
+        | Document | Content |
+        |---|---|
+        | `THEORY.md` | Formal apparatus: Definitions, Remark on the gravity sector, Propositions, Open Problems |
+        | `RG_UNIFICATION.md` | Methods and results of the gauge-coupling analysis |
+        | `GUT_EMBEDDING.md` | SU(5)/SO(10) embedding, normalization, anomaly arithmetic |
+        | `CONCLUSION.md` | Honest assessment (rendered on the Conclusion & Assessment page) |
+        | `REFERENCES.md` | Bibliography (rendered on the References & About page) |
+        | `USER_GUIDE.md` | Install, run, reproduce, build the paper |
+        """)
+
+        paper_pdf = os.path.join("paper", "gutoe.pdf")
+        if os.path.exists(paper_pdf):
+            with open(paper_pdf, "rb") as f:
+                st.download_button(
+                    label="Download the compiled paper (paper/gutoe.pdf)",
+                    data=f.read(), file_name="gutoe.pdf",
+                    mime="application/pdf")
+        else:
+            st.info("The typeset paper has not been built yet; run "
+                    "`bash paper/build.sh` (requires LaTeX).")
+
+        st.subheader("Per-formula LaTeX/PDF generation (legacy tooling)")
 
         # Select formula for documentation
         formulas = api.list_formulas()
@@ -624,49 +842,59 @@ def main():
                         pdf_display = f'<iframe src="data:application/pdf;base64,{base64.b64encode(pdf_bytes).decode()}" width="700" height="1000" type="application/pdf"></iframe>'
                         st.markdown(pdf_display, unsafe_allow_html=True)
 
-    # About page
-    elif page == "About":
-        st.title("ℹ️ About the Theory of Everything")
-        st.markdown("""
-        ## Theory of Everything (ToE)
+    # Conclusion & Assessment page
+    elif page == "Conclusion & Assessment":
+        st.title("Conclusion & Assessment")
+        conclusion = read_doc("CONCLUSION.md")
+        if conclusion:
+            st.markdown(conclusion)
+        else:
+            st.error("docs/CONCLUSION.md not found.")
 
-        The Theory of Everything is a unified framework for physics that combines various physical theories
-        into a single model. It aims to provide a comprehensive explanation of all physical phenomena,
-        from the smallest subatomic particles to the largest cosmic structures.
+    # References & About page
+    elif page == "References & About":
+        st.title("References & About")
+
+        st.markdown("""
+        ## About this project
+
+        A pedagogical and computational framework that organizes the
+        standard actions of fundamental physics, reproduces the classic
+        gauge-coupling-unification computation, and presents the result —
+        and its limits — with formal apparatus and citations. It does not
+        claim to be, or to contain, a theory of everything; see the
+        Conclusion & Assessment page.
+
+        The project's structure follows an independent academic evaluation
+        (PDF in the repository root) whose findings are addressed
+        point-by-point in `docs/CONCLUSION.md`.
 
         ### Components
 
-        The Theory of Everything consists of several key components:
-
-        - **Gravity Action**: Einstein-Hilbert action and extensions
-        - **Matter Action**: Fermion fields and Higgs field
-        - **Gauge Action**: Yang-Mills action and supersymmetric gauge fields
-        - **Quantum Corrections**: Path integral formulation and loop corrections
-        - **Unified Action**: Combined action for the Theory of Everything
-
-        ### Theoretical Implications
-
-        The Theory of Everything has several profound implications:
-
-        - **Unified Physical Laws**: All forces and matter fields are combined into a single framework
-        - **Quantum Gravity**: Spacetime is quantized and emergent from more fundamental structures
-        - **Supersymmetry**: A fundamental symmetry balances matter and force particles
-        - **Dark Matter/Energy**: Quantum spacetime fluctuations and supersymmetric particles provide natural explanations
-        - **Origin of the Universe**: The unified framework provides a mathematical basis for understanding cosmic origins
-
-        ### Project Structure
-
-        This project is organized into a modular structure:
-
-        - **Core**: Core functionality used by all other modules
-        - **Formulas**: Tools for working with mathematical formulas
-        - **Visualization**: Tools for generating visualizations
-        - **Agents**: Specialized agents for generating documentation
+        - **Physics computations** (`toe_math/`): RG running and
+          unification, SU(5)/SO(10) embedding, the formal master-equation
+          presentation
+        - **Interactive visualization** (`visualization/plotly_4d.py`):
+          genuine 4D techniques (projection and slicing)
+        - **Formula catalog** (`unified/`, `component_formulas/`):
+          transcriptions of the established sector actions
+        - **Documents** (`docs/`, `paper/`): the formal presentation and
+          the compiled paper
 
         ### Credits
 
-        This project was developed by Professor Codephreak.
+        Developed by Professor Codephreak (an AI-assisted project of
+        Gregory L. Magnusson). Restructured in 2026 in response to the
+        independent academic evaluation. The pre-2026 documentation is
+        preserved in `docs/legacy/`.
         """)
+
+        st.markdown("---")
+        references = read_doc("REFERENCES.md")
+        if references:
+            st.markdown(references)
+        else:
+            st.error("docs/REFERENCES.md not found.")
 
 # Run the application
 if __name__ == "__main__":
