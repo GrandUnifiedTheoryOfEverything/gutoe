@@ -13,18 +13,9 @@ import base64
 from io import BytesIO
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-
-
-# Import the Theory of Everything components
-from unified.toe_unified import ToEUnified
-from unified.toe_formulas import FormulaTools
-from unified.toe_vis import VisualizationTools
 
 # Formal presentation content (single source of truth for the master
-# equation, glossary, and propositions)
+# equation, glossary, and propositions). Pure strings: cheap to import.
 from toe_math import master_equation as master_eq
 
 try:
@@ -32,13 +23,60 @@ try:
 except ImportError:
     VERSION = "2.0.0"
 
-# Plotly powers the interactive visualizations; degrade gracefully if absent
-try:
-    from visualization import plotly_4d as p4d
-    PLOTLY_AVAILABLE = True
-except ImportError:
-    p4d = None
-    PLOTLY_AVAILABLE = False
+# ---------------------------------------------------------------------------
+# Boot-speed strategy: heavy libraries (matplotlib, plotly, sympy via the
+# unified API) are imported lazily inside cached getters, so the landing
+# page paints before any of them load and each page pays only for what it
+# uses. Figure builders are cached so revisiting a page is instant.
+# ---------------------------------------------------------------------------
+
+
+@st.cache_resource(show_spinner=False)
+def get_p4d():
+    """Lazy, cached import of the Plotly 4D module (pulls in plotly)."""
+    try:
+        from visualization import plotly_4d
+        return plotly_4d
+    except ImportError:
+        return None
+
+
+def plotly_available():
+    return get_p4d() is not None
+
+
+@st.cache_resource(show_spinner="Loading formula engine…")
+def get_api():
+    """Lazy, cached construction of the unified API (pulls in sympy)."""
+    from unified.toe_unified import ToEUnified
+    return ToEUnified(output_dir="gfx")
+
+
+@st.cache_data(show_spinner=False)
+def cached_fig(name, **params):
+    """Build a Plotly figure by name with caching (pickled by Streamlit,
+    so repeat visits and unchanged sliders cost nothing)."""
+    p4d = get_p4d()
+    return getattr(p4d, name)(**params)
+
+
+@st.cache_data(show_spinner=False)
+def cached_rg(models, loops, m_susy):
+    """RG running results + figure, cached per control setting."""
+    from toe_math import rg_running as rg
+    fig = rg.make_rg_figure_plotly(models=models, loops=loops,
+                                   m_susy=m_susy)
+    results = {}
+    for model in models:
+        mu, a_inv = rg.run_couplings(model=model, loops=loops,
+                                     m_susy=m_susy)
+        uni = rg.find_unification(mu, a_inv)
+        tau = None
+        if uni["M_GUT"] is not None:
+            tau = rg.proton_lifetime_years(uni["M_GUT"],
+                                           1.0 / uni["alpha_gut_inv"])
+        results[model] = {**uni, "tau_p": tau}
+    return fig, results
 
 # Set page configuration
 st.set_page_config(
@@ -93,6 +131,7 @@ def display_formula(formula_name, formula_data):
 
 def generate_visualization(vis_name, params=None):
     """Generate a visualization and display it"""
+    from unified.toe_vis import VisualizationTools
     vis_tools = VisualizationTools()
 
     if params is None:
@@ -121,6 +160,7 @@ def read_doc(name):
 
 def create_interactive_visualization_plotly(vis_name):
     """Interactive Plotly visualization with parameter controls."""
+    p4d = get_p4d()
     if vis_name == '4d_spacetime_curvature':
         mass = st.slider("Mass (solar masses)", 0.1, 10.0, 1.0, 0.1)
         grid = st.slider("Grid size", 10, 80, 40, 5)
@@ -163,6 +203,8 @@ def create_interactive_visualization(vis_name):
 
 def create_spacetime_curvature_vis():
     """Create an interactive spacetime curvature visualization"""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     # Get user parameters
     mass = st.slider("Mass (solar masses)", 0.1, 10.0, 1.0, 0.1)
     grid_size = st.slider("Grid size", 10, 50, 20, 1)
@@ -206,6 +248,8 @@ def create_spacetime_curvature_vis():
 
 def create_quantum_foam_vis():
     """Create an interactive quantum foam visualization"""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     # Get user parameters
     amplitude = st.slider("Amplitude", 0.1, 1.0, 0.5, 0.1)
     frequency = st.slider("Frequency", 0.5, 5.0, 2.0, 0.1)
@@ -248,6 +292,8 @@ def create_quantum_foam_vis():
 
 def create_extra_dimensions_vis():
     """Create an interactive extra dimensions visualization"""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     # Get user parameters
     num_dimensions = st.slider("Number of dimensions", 4, 11, 10, 1)
     grid_size = st.slider("Grid size", 10, 30, 20, 1)
@@ -285,6 +331,8 @@ def create_extra_dimensions_vis():
 
 def create_higgs_field_vis():
     """Create an interactive Higgs field visualization"""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     # Get user parameters
     grid_size = st.slider("Grid size", 10, 50, 30, 1)
 
@@ -318,6 +366,8 @@ def create_higgs_field_vis():
 
 def create_gauge_field_vis():
     """Create an interactive gauge field visualization"""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
     # Get user parameters
     grid_size = st.slider("Grid size", 5, 20, 10, 1)
 
@@ -399,8 +449,10 @@ def main():
     # Ensure all required directories exist
     ensure_directories()
 
-    # Create the API
-    api = ToEUnified(output_dir="gfx")
+    # Heavy resources are resolved lazily per page (see cached getters
+    # at the top of this file).
+    PLOTLY_AVAILABLE = plotly_available()
+    p4d = get_p4d()
 
     # Sidebar
     st.sidebar.title("Theory of Everything Explorer")
@@ -414,12 +466,13 @@ def main():
     except Exception as e:
         st.sidebar.warning(f"Could not load logo: {str(e)}")
 
-    # Navigation
+    # Navigation (key="page" lets the Home mission cards switch pages)
     page = st.sidebar.selectbox(
         "Navigation",
         ["Home", "Master Equation", "Gauge Unification (RG)", "Formulas",
          "Visualizations", "Documentation", "Conclusion & Assessment",
-         "References & About"]
+         "References & About"],
+        key="page",
     )
 
     st.sidebar.caption(
@@ -432,42 +485,157 @@ def main():
                            "visualizations are degraded. Run "
                            "`pip install plotly kaleido`.")
 
-    # Home page
+    # Home page — fast-painting animated landing with mission cards.
+    # Everything above the fold is CSS/HTML and pre-rendered GIFs: no
+    # physics or plotting library loads until a card is clicked.
     if page == "Home":
-        st.title("Theory of Everything Explorer")
         st.markdown("""
-        A **pedagogical and computational framework** that organizes the
-        standard actions of fundamental physics — general relativity, the
-        Standard Model matter and gauge sectors, and the formal loop
-        expansion — into a single composite expression, and *computes* the
-        piece of unification physics that is honestly computable at this
-        level: renormalization-group gauge-coupling unification and the
-        proton-lifetime estimate it implies.
+        <style>
+        @keyframes drift { from {background-position: 0 0;}
+                           to {background-position: -900px 450px;} }
+        @keyframes glow { 0%,100% {text-shadow: 0 0 18px #58a6ff66;}
+                          50% {text-shadow: 0 0 34px #58a6ffcc;} }
+        @keyframes rise { from {opacity:0; transform:translateY(14px);}
+                          to {opacity:1; transform:translateY(0);} }
+        .hero {
+          position: relative; border-radius: 14px; overflow: hidden;
+          padding: 2.6rem 2.4rem 2.2rem; margin-bottom: 1rem;
+          background:
+            radial-gradient(1.5px 1.5px at 40px 60px, #fff8, transparent),
+            radial-gradient(1px 1px at 190px 120px, #fff5, transparent),
+            radial-gradient(1.5px 1.5px at 320px 40px, #fff7, transparent),
+            radial-gradient(1px 1px at 460px 160px, #fff4, transparent),
+            radial-gradient(1.5px 1.5px at 610px 90px, #fff6, transparent),
+            radial-gradient(1px 1px at 750px 30px, #fff5, transparent),
+            linear-gradient(125deg, #0d1117 0%, #11192c 45%, #1a1033 100%);
+          background-size: 900px 450px, 900px 450px, 900px 450px,
+            900px 450px, 900px 450px, 900px 450px, cover;
+          animation: drift 70s linear infinite;
+          border: 1px solid #30363d;
+        }
+        .hero h1 {
+          margin: 0 0 0.4rem; font-size: 2.1rem; color: #e6edf3;
+          animation: glow 4.5s ease-in-out infinite;
+        }
+        .hero .eq {
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: 1.45rem; color: #79b8ff; letter-spacing: 1px;
+          margin: 0.6rem 0 0.9rem; animation: rise 0.9s ease-out;
+        }
+        .hero p { color: #9aa4b2; max-width: 46rem; margin: 0;
+                  animation: rise 1.2s ease-out; }
+        .statline { display: flex; gap: 0.6rem; flex-wrap: wrap;
+                    margin-top: 1.1rem; animation: rise 1.5s ease-out; }
+        .stat {
+          padding: 0.32rem 0.85rem; border-radius: 999px;
+          font-size: 0.82rem; font-weight: 600;
+          border: 1px solid #58a6ff55; color: #79b8ff;
+          background: #58a6ff14; transition: all 0.25s ease;
+        }
+        .stat:hover { background: #58a6ff33; transform: translateY(-2px);
+                      box-shadow: 0 4px 16px #58a6ff33; }
+        .stat.ok { border-color: #3fb95055; color: #56d364;
+                   background: #3fb95014; }
+        .stat.ok:hover { background: #3fb95033;
+                         box-shadow: 0 4px 16px #3fb95033; }
+        /* mission cards: lift, glow, and animate the arrow on hover */
+        div[data-testid="stButton"] > button {
+          width: 100%; text-align: left; white-space: pre-line;
+          border: 1px solid #30363d; border-radius: 12px;
+          padding: 0.9rem 1rem; min-height: 7.2rem;
+          background: #161b22; transition: all 0.22s ease;
+        }
+        div[data-testid="stButton"] > button:hover {
+          transform: translateY(-4px); border-color: #58a6ff;
+          box-shadow: 0 10px 28px #0009, 0 0 18px #58a6ff22;
+        }
+        div[data-testid="stButton"] > button:active {
+          transform: translateY(-1px) scale(0.99);
+        }
+        </style>
+        <div class="hero">
+          <h1>Theory of Everything Explorer</h1>
+          <div class="eq">S = S<sub>gravity</sub> + S<sub>matter</sub> +
+            S<sub>gauge</sub> + S<sub>quantum</sub></div>
+          <p>A pedagogical and computational framework for the composite
+          action of fundamental physics. Not a theory of everything —
+          and honest about it. The parts that can be computed are
+          computed, live, on every page.</p>
+          <div class="statline">
+            <span class="stat ok">MSSM unification · 0.7% @ 2 loops</span>
+            <span class="stat">M<sub>GUT</sub> ≈ 1.3×10¹⁶ GeV</span>
+            <span class="stat ok">τ<sub>p</sub> ≈ 10³⁵·⁷ yr &gt; Super-K</span>
+            <span class="stat">SM near-miss · 11.5%</span>
+            <span class="stat">Λ = 1.1056×10⁻⁵² m⁻²</span>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-        This is **not** a theory of everything, and it does not claim to
-        unify physics; see *Conclusion & Assessment* for the honest scope,
-        including the independent academic evaluation this project
-        incorporates.
+        # Mission cards — click to jump straight into a page
+        def _goto(target):
+            st.session_state.page = target
 
-        ### What you can do here
+        st.markdown("##### Choose your mission")
+        cards = [
+            ("🧭  Master Equation",
+             "The composite action as a formal Definition —\n"
+             "full aligned display and an 18-symbol glossary",
+             "Master Equation"),
+            ("⚡  Run the Unification",
+             "Drive the RG running yourself: SM vs MSSM,\n"
+             "1–2 loops, SUSY threshold, Super-K verdict",
+             "Gauge Unification (RG)"),
+            ("🔮  Enter the 4th Dimension",
+             "Tesseract projection, hyperplane slicing,\n"
+             "animated spacetime — all interactive",
+             "Visualizations"),
+            ("📐  Formula Catalog",
+             "Every sector action with LaTeX rendering\n"
+             "and component exploration",
+             "Formulas"),
+            ("⚖️  The Honest Verdict",
+             "What this is, what it is not, and the\n"
+             "independent evaluation, point by point",
+             "Conclusion & Assessment"),
+            ("📚  Documentation & Paper",
+             "Formal docs, references, and the compiled\n"
+             "LaTeX paper",
+             "Documentation"),
+        ]
+        for row_start in (0, 3):
+            cols = st.columns(3)
+            for col, (title, blurb, target) in zip(
+                    cols, cards[row_start:row_start + 3]):
+                with col:
+                    st.button(f"{title}\n\n{blurb}",
+                              key=f"card-{target}",
+                              on_click=_goto, args=(target,),
+                              use_container_width=True)
 
-        - **Master Equation** — the composite action presented as a formal
-          Definition, with a complete symbol glossary
-        - **Gauge Unification (RG)** — run the couplings yourself: SM vs.
-          MSSM, 1 vs. 2 loops, adjustable SUSY threshold
-        - **Formulas** — the catalog of sector actions with LaTeX rendering
-        - **Visualizations** — interactive 4D techniques: tesseract
-          projection, hyperplane slicing, and animated field evolution
-        - **Documentation** — the formal documents and the compiled paper
-        """)
+        # A taste of the 4th dimension — pre-rendered, instant to serve
+        st.markdown("##### The fourth dimension, three ways")
+        g1, g2, g3 = st.columns(3)
+        galleries = [
+            (g1, "gfx/4d/tesseract_rotation.gif",
+             "Projection: tesseract under double rotation"),
+            (g2, "gfx/4d/clifford_torus.gif",
+             "Stereographic: Clifford torus turning inside out"),
+            (g3, "gfx/4d/field_w_sweep.gif",
+             "Slicing: a field swept through w"),
+        ]
+        for col, path, caption in galleries:
+            with col:
+                if os.path.exists(path):
+                    st.image(path, caption=caption,
+                             use_container_width=True)
 
-        st.subheader("Sample: spacetime curvature near a point mass")
-        if PLOTLY_AVAILABLE:
-            st.plotly_chart(p4d.spacetime_curvature_figure(),
-                            use_container_width=True)
-        else:
-            fig = create_spacetime_curvature_vis()
-            st.pyplot(fig)
+        with st.expander("Live demo: spacetime curvature near a point "
+                         "mass (loads the plotting engine)"):
+            if PLOTLY_AVAILABLE:
+                st.plotly_chart(cached_fig("spacetime_curvature_figure"),
+                                use_container_width=True)
+            else:
+                st.pyplot(create_spacetime_curvature_vis())
 
     # Master Equation page
     elif page == "Master Equation":
@@ -540,15 +708,13 @@ def main():
             show = st.multiselect("Models", ["SM", "MSSM"],
                                   default=["SM", "MSSM"])
 
+        results = {}
         if show:
-            fig = rg.make_rg_figure_plotly(models=show, loops=loops,
-                                           m_susy=float(m_susy))
+            fig, results = cached_rg(tuple(show), loops, float(m_susy))
             st.plotly_chart(fig, use_container_width=True)
 
         for model in show:
-            mu, a_inv = rg.run_couplings(model=model, loops=loops,
-                                         m_susy=float(m_susy))
-            uni = rg.find_unification(mu, a_inv)
+            uni = results[model]
             st.subheader(f"{model} ({loops}-loop)")
             c1, c2, c3, c4 = st.columns(4)
             if uni["M_GUT"] is not None:
@@ -556,8 +722,7 @@ def main():
                 c2.metric("α_GUT⁻¹", f"{uni['alpha_gut_inv']:.1f}")
                 c3.metric("Mismatch at crossing",
                           f"{100 * uni['mismatch']:.1f}%")
-                tau = rg.proton_lifetime_years(uni["M_GUT"],
-                                               1.0 / uni["alpha_gut_inv"])
+                tau = uni["tau_p"]
                 c4.metric("τ_p estimate", f"{tau:.1e} yr")
                 if uni["unifies"]:
                     verdict = (f"Couplings unify (mismatch "
@@ -614,6 +779,7 @@ def main():
 
     # Formulas page
     elif page == "Formulas":
+        api = get_api()
         st.title("Formula Catalog")
         st.caption("Transcriptions of established sector actions; see the "
                    "Master Equation page for the formal presentation and "
@@ -679,6 +845,7 @@ def main():
 
         with viz_tab1:
             # List available visualizations
+            api = get_api()
             visualizations = api.list_visualizations()
             vis_name = st.selectbox("Select a visualization", list(visualizations.keys()))
 
@@ -735,7 +902,7 @@ def main():
                 )
 
                 if advanced_vis == "4D Hypercube (projection)":
-                    st.plotly_chart(p4d.tesseract_figure(),
+                    st.plotly_chart(cached_fig("tesseract_figure"),
                                     use_container_width=True)
                     st.markdown("""
                     The 16 vertices and 32 edges of the tesseract
@@ -750,7 +917,7 @@ def main():
                 elif advanced_vis == "4D Hypercube (slicing)":
                     w = st.slider("Hyperplane position w", -1.5, 1.5, 0.0,
                                   0.05)
-                    st.plotly_chart(p4d.tesseract_slice_figure(w),
+                    st.plotly_chart(cached_fig("tesseract_slice_figure", w=w),
                                     use_container_width=True)
                     st.markdown("""
                     The 3D cross-section of the tesseract with the
@@ -763,7 +930,7 @@ def main():
                     """)
 
                 elif advanced_vis == "4D Quantum Field (slicing)":
-                    st.plotly_chart(p4d.quantum_field_4d_figure(),
+                    st.plotly_chart(cached_fig("quantum_field_4d_figure"),
                                     use_container_width=True)
                     st.markdown("""
                     A scalar field $f(x, y; w)$ on four coordinates,
@@ -775,7 +942,7 @@ def main():
                     """)
 
                 else:  # 4D Spacetime Evolution
-                    st.plotly_chart(p4d.spacetime_evolution_figure(),
+                    st.plotly_chart(cached_fig("spacetime_evolution_figure"),
                                     use_container_width=True)
                     st.markdown("""
                     Here the 4th coordinate is *time*: a curvature ripple
@@ -816,6 +983,7 @@ def main():
         st.subheader("Per-formula LaTeX/PDF generation (legacy tooling)")
 
         # Select formula for documentation
+        api = get_api()
         formulas = api.list_formulas()
         formula_name = st.selectbox("Select a formula", list(formulas.keys()))
 

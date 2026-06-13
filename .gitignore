@@ -12,3 +12,4 @@ paper/*.out
 paper/*.fls
 paper/*.fdb_latexmk
 paper/*.toc
+tools/graphics-pipeline/node_modules/

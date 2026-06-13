@@ -1,0 +1,13 @@
+{
+  "name": "gutoe-graphics-pipeline",
+  "version": "2.0.0",
+  "description": "On-the-fly graphic formatting for GUToE: converts the generated 4D GIF/PNG assets into optimized animated WebP and resized variants for web delivery (org profile, app landing pages).",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize": "node optimize.js --in ../../gfx/4d --out ../../gfx/4d/web"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}
