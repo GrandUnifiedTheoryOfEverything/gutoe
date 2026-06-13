@@ -38,7 +38,7 @@ class EinsteinHilbertAction:
         """Initialize the Einstein-Hilbert action"""
         self.G = 6.67430e-11  # Gravitational constant
         self.c = 299792458    # Speed of light
-        self.Lambda = 1.089e-52  # Cosmological constant
+        self.Lambda = 1.1056e-52  # Cosmological constant [m^-2], Planck 2018 (arXiv:1807.06209)
 
         # Initialize symbolic variables
         self.init_symbols()

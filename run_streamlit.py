@@ -20,14 +20,11 @@ def main():
     # Create the logo if it doesn't exist
     if not os.path.exists("gfx/toe_logo.png"):
         print("Creating logo...")
-        subprocess.run([sys.executable, "create_logo.py"])
+        subprocess.run([sys.executable, os.path.join("visualization",
+                                                     "create_logo.py")])
 
-    # Create 4D visualizations if they don't exist
-    if not os.path.exists("gfx/4d/4d_hypercube_projection.png") or \
-       not os.path.exists("gfx/4d/4d_quantum_field.png") or \
-       not os.path.exists("gfx/4d/4d_spacetime_evolution.gif"):
-        print("Creating 4D visualizations...")
-        subprocess.run([sys.executable, "create_4d_vis.py"])
+    # 4D visualizations are rendered live in the app via Plotly
+    # (visualization/plotly_4d.py); no pre-generation step is needed.
 
     # Create the gfx subdirectories if they don't exist
     for subdir in ["2d", "3d", "4d", "latex", "pdf"]:

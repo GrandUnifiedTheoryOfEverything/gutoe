@@ -48,7 +48,7 @@ class TheoryOfEverything:
         self.G = 6.67430e-11  # Gravitational constant
         self.c = 299792458    # Speed of light
         self.h_bar = 1.054571817e-34  # Planck constant
-        self.Lambda = 1.089e-52  # Cosmological constant
+        self.Lambda = 1.1056e-52  # Cosmological constant [m^-2], Planck 2018 (arXiv:1807.06209)
         self.max_loops = 5
         self.m = 1.0  # Mass parameter
 

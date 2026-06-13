@@ -10,6 +10,16 @@ and creating 3D visualizations of the Earth-ionosphere cavity.
 The Schumann resonances are a set of spectrum peaks in the extremely low
 frequency (ELF) portion of the Earth's electromagnetic field spectrum,
 occurring between 7.83 and 33.8 Hz.
+
+Scope note
+----------
+Schumann resonances are a phenomenon of *classical* electrodynamics -- the
+standing-wave modes of the Earth-ionosphere spherical cavity. This module
+is included as a self-contained electromagnetic-cavity demonstration and is
+independent of, and unrelated to, the unification framework presented in
+the rest of this project. It plays no role in the composite action, the
+gauge-coupling analysis, or any claim about fundamental physics. See
+docs/appendices/SCHUMANN_EM_CAVITY.md.
 """
 
 import numpy as np

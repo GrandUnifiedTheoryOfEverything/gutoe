@@ -30,10 +30,10 @@ class ToEFormulas:
     def __init__(self):
         """Initialize the formula visualization system"""
         # Physical constants
-        self.G = 6.67430e-11  # Gravitational constant
-        self.c = 299792458    # Speed of light
-        self.h_bar = 1.054571817e-34  # Reduced Planck constant
-        self.Lambda = 1.089e-52  # Cosmological constant
+        self.G = 6.67430e-11  # Gravitational constant [m^3 kg^-1 s^-2]
+        self.c = 299792458    # Speed of light [m s^-1]
+        self.h_bar = 1.054571817e-34  # Reduced Planck constant [J s]
+        self.Lambda = 1.1056e-52  # Cosmological constant [m^-2], Planck 2018 (arXiv:1807.06209)
         
         # Initialize symbols for symbolic mathematics
         self.initialize_symbols()
@@ -121,9 +121,9 @@ class ToEFormulas:
                                               symbols('F_{\\mu\\nu}^a F^{\\mu\\nu}_a')), 
                                        (self.x, self.y, self.z, self.t)))
         
-        self.susy_gauge = Eq(self.S_SUSY_gauge, 
-                            sp.Integral(sp.Mul(symbols('-\\frac{1}{4}F_{\\mu\\nu}F^{\\mu\\nu} + i\\bar{\\lambda}\\gamma^{\\mu}D_{\\mu}\\lambda')), 
-                                       (self.x, self.y, self.z, self.t))))
+        self.susy_gauge = Eq(self.S_SUSY_gauge,
+                            sp.Integral(sp.Mul(symbols('-\\frac{1}{4}F_{\\mu\\nu}F^{\\mu\\nu} + i\\bar{\\lambda}\\gamma^{\\mu}D_{\\mu}\\lambda')),
+                                       (self.x, self.y, self.z, self.t)))
         
         # Quantum corrections
         self.path_integral = Eq(symbols('Z'), 

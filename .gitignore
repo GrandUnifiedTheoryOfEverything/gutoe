@@ -1,2 +1,14 @@
 # Ignore virtual environment directory
 toe/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# LaTeX build artifacts (the committed output is paper/gutoe.pdf)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.toc
