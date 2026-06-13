@@ -55,6 +55,13 @@ window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
   .plain { color: #9aa4b2; font-style: italic; }
   .stop-note { color: #3fb950; font-size: 0.8rem; letter-spacing: 0.5px;
                text-transform: uppercase; }
+  .hud-readout {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    font-size: 0.85rem; color: #3fb950; letter-spacing: 0.08em;
+    background: #0d1117; border: 1px solid #1f6f31; border-radius: 6px;
+    padding: 0.3rem 0.7rem; margin-top: 0.4rem; display: inline-block;
+    text-shadow: 0 0 8px #3fb95066;
+  }
 </style>
 """)
 
@@ -144,6 +151,7 @@ NAV = [
     ("— Gauge sector & unification", "c-gauge"),
     ("— Quantum sector", "c-quantum"),
     ("Seeing the fourth dimension", "c-4d"),
+    ("DIMENSION DRIVE (interactive)", "c-drive"),
     ("The honest conclusion", "c-conclusion"),
 ]
 
@@ -542,6 +550,46 @@ with ui.column().classes("w-full max-w-5xl mx-auto p-4"):
             ui.plotly(_dark(p4d.spacetime_evolution_figure(
                 grid=50, n_frames=24), height=440)).classes("w-full")
             stop_note()
+
+    # ===== Level 0: DIMENSION DRIVE =======================================
+    with concept("DIMENSION DRIVE — the interactive geometry deck",
+                 "Sci-fi skin, honest mathematics: spin a triangle into "
+                 "a circle, master 3D in its three planes, engage 4D, "
+                 "draw your own shape and spin it, and fall into the "
+                 "Mandelbrot set.",
+                 icon="rocket_launch", anchor="c-drive"):
+        from visualization import dimension_drive as dd
+
+        with concept("SPIN DECK — triangle → circle → square",
+                     "One fixed point, one dial. The golden-angle "
+                     "preset grows a sunflower.",
+                     icon="play_circle", opened=True):
+            dd.build_spin_deck()
+            stop_note("Precision is the display: θ to a thousandth of "
+                      "a degree on the readout.")
+
+        with concept("XYZ DECK — mastery over 3D, then ENGAGE 4D",
+                     "Cube, globe, or pyramid under three plane "
+                     "controllers; one button adds the other three "
+                     "planes of 4D.",
+                     icon="threed_rotation"):
+            dd.build_xyz_deck()
+            stop_note("From mastery of 3D, 4D is expressed: three "
+                      "planes become six. Nothing else changes.")
+
+        with concept("DRAW DECK — your pointer, connected",
+                     "Mouse and touch drawing for fun; then your sketch "
+                     "gets the triangle treatment.",
+                     icon="gesture"):
+            dd.build_draw_deck()
+
+        with at_level(concept("MANDELBROT MODE — z ← z² + c",
+                              "Infinite structure from a one-line rule "
+                              "(and honestly unrelated to unification).",
+                              icon="all_out"), 1):
+            dd.build_mandelbrot_deck()
+            stop_note("Iteration depth is the accuracy dial; the "
+                      "readout shows the exact complex window.")
 
     # ===== Level 0: the honest conclusion ==================================
     with concept("The honest conclusion",
