@@ -1,0 +1,22 @@
+# Everything: all three UI deliveries, figure export, and legacy
+# PDF tooling.  pip install -r requirements-full.txt
+-r requirements.txt
+
+# UI delivery 2 (Dash dashboard) and 3 (NiceGUI Control Room)
+dash>=2.16.0
+nicegui>=1.4.0
+
+# Static export of Plotly figures
+kaleido>=0.2.1
+
+# Legacy PDF generation and enhancement (unified/agents, *_pdf_agent.py)
+reportlab>=3.6.0
+PyPDF2>=2.0.0
+pdfrw>=0.4.0
+svglib>=1.0.0
+qrcode>=7.0.0
+weasyprint>=54.0
+fpdf2>=2.5.0
+
+# External (not installable via pip): a LaTeX distribution for
+# paper/build.sh — TeX Live (Linux/macOS) or MiKTeX (Windows).

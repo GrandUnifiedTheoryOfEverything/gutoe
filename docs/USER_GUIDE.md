@@ -10,8 +10,13 @@ distribution providing `pdflatex`/`latexmk`.
 ```bash
 git clone https://github.com/GrandUnifiedTheoryOfEverything/gutoe.git
 cd gutoe
-pip install -r requirements.txt
+pip install -r requirements.txt        # Streamlit app only
+pip install -r requirements-full.txt   # all three UIs, export, PDF tooling
 ```
+
+`requirements.txt` is kept minimal on purpose: it is what the deployed
+Streamlit Cloud app builds from. The Dash dashboard and NiceGUI Control
+Room need `requirements-full.txt`.
 
 ## 2. The interactive applications (three deliveries, one physics core)
 

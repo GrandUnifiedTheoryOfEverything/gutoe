@@ -72,7 +72,8 @@ computable. Order-of-magnitude caveats and methods:
 ## Quick start
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt        # Streamlit app only (deployed set)
+pip install -r requirements-full.txt   # all three UIs + export + PDF tooling
 
 # UI delivery 1 — Streamlit explorer (8 pages incl. Master Equation,
 # Gauge Unification, interactive 4D visualizations)
